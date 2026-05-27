@@ -1,30 +1,28 @@
-print("dns lookup tool")
 import dns.resolver
+from utils.resolver import lookup
+from utils.formatter import print_results
+from utils.validator import is_valid_record
 
-domain = input("entr domain name: ")
-# record = input("enter record type: ").upper()
-allowed_records = ["A", "AAAA", "MX", "NS", "TXT", "CNAME"]
-for rec in allowed_records:
- try:
-        result = dns.resolver.resolve(domain,rec)
+domain = input("Enter domain: ")
+record_type = input("Enter record type: ").upper()
 
-        
-        print("\n========================================")
-        print(f"{rec} records for {domain}")
-        print("========================================\n")
-       
-        for index, data in enumerate(result, start=1):
-            print(f"{index}. {data}")
-        
- except dns.resolver.NXDOMAIN:
-     print("domain name doest exist")
-     break
+if not is_valid_record(record_type):
+    print("Invalid record type")
 
- except dns.resolver.NoAnswer:
-     print("no record found")
+else:
+    try:
+        results = lookup(domain, record_type)
 
- except dns.resolver.Timeout:
-     print("requested timeout")
+        print_results(domain, record_type, results)
 
- except Exception as e:
-     print("error", e)
+    except dns.resolver.NXDOMAIN:
+        print("Domain does not exist")
+
+    except dns.resolver.NoAnswer:
+        print("No record found")
+
+    except dns.resolver.Timeout:
+        print("[Request timed out")
+
+    except Exception as e:
+        print(f"Error: {e}")

@@ -1,0 +1,1 @@
+allowed_records = ["A", "AAAA", "MX", "NS", "TXT", "CNAME"]
