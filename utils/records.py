@@ -1,1 +1,1 @@
-allowed_records = ["A", "AAAA", "MX", "NS", "TXT", "CNAME"]
+allowed_records = ["A", "AAAA", "MX", "NS", "TXT", "CNAME", "PTR"]
