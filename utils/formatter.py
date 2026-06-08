@@ -13,3 +13,28 @@ def print_reverse_results(ip_address, results):
 
     for index, data in enumerate(results, start=1):
         print(f"{index}. {data}")
+
+def print_ptr_intelligence(intel):
+    """
+    Display enriched PTR intelligence analysis.
+    intel is the dict returned by analyze_ptr()
+    """
+    print("\n--- PTR Intelligence ---\n")
+
+    if intel['provider']:
+        print(f"  Provider   : {intel['icon']} {intel['provider']}")
+        print(f"  Category   : {intel['category']}")
+    else:
+        print("  Provider   : Unrecognized")
+
+    if intel['encoded_ip']:
+        print(f"  Encoded IP : {intel['encoded_ip']}")
+
+    if intel['region']:
+        print(f"  Region     : {intel['region']}")
+
+    if intel['service_hint']:
+        print(f"  Service    : {intel['service_hint']}")
+
+    print(f"  Confidence : {intel['confidence']}")
+    print()

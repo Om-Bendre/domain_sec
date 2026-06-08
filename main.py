@@ -1,27 +1,60 @@
 import dns.resolver
 from utils.resolver import lookup
-from utils.formatter import print_results
-from utils.validator import is_valid_record
+from utils.formatter import print_results, print_reverse_results, print_ptr_intelligence
+from utils.validator import is_valid_record, is_valid_ip
 from utils.timer import start_timer, stop_timer
 from utils.dns_servers import dns_cust_servers
 from utils.reverse_lookup import reverse_lookup
-from utils.validator import is_valid_ip
-from utils.formatter import print_reverse_results
+from utils.ip_extractor import extract_ips
+from analysis.ptr_intel import analyze_ptr
+
+
+def run_infrastructure_analysis(ips, selected_name, selected_ip):
+    """
+    Shared infrastructure analysis block.
+    Accepts a list of IPs and runs PTR intelligence on each.
+    """
+    print("\nInfrastructure analysis available for the followin  IPs:")
+    for i, ip in enumerate(ips, start=1):
+        print(f"  {i}. {ip}")
+
+    choice = input("\nView infrastructure analysis? (y/n): ").strip().lower()
+
+    if choice != 'y':
+        return
+
+    for ip in ips:
+        print(f"\n[ Analyzing {ip} ]")
+
+        try:
+            start = start_timer()
+            ptr_results = reverse_lookup(ip, selected_ip)
+            elapsed = stop_timer(start)
+
+            print_reverse_results(ip, ptr_results)
+            print(f"  Lookup Time : {elapsed * 1000:.2f} ms")
+
+            for record in ptr_results:
+                intel = analyze_ptr(str(record))
+                print_ptr_intelligence(intel)
+
+        except dns.resolver.NXDOMAIN:
+            print(f"  No PTR record found for {ip}")
+        except dns.resolver.Timeout:
+            print(f"  Request timed out for {ip}")
+        except Exception as e:
+            print(f"  Error analyzing {ip}: {e}")
 
 
 def main():
-
     print("\nChoose Operation:\n")
     print("1. Forward Lookup")
     print("2. Reverse Lookup")
-
     operation = input("\nEnter choice: ")
 
     print("\nChoose DNS Resolver:\n")
-
     for key, value in dns_cust_servers.items():
         print(f"{key}. {value[0]}")
-
     choice = input("\nEnter choice: ")
 
     if choice not in dns_cust_servers:
@@ -30,100 +63,82 @@ def main():
 
     selected_name, selected_ip = dns_cust_servers[choice]
 
+    # This list is populated by whichever branch runs
+    # The shared analysis block reads from it afterward
+    ips_for_analysis = []
+
     if operation == "1":
+        domain = input("Enter domain: ")
+        record_type = input("Enter record type: ").upper()
 
-     domain = input("Enter domain: ")
-     record_type = input("Enter record type: ").upper()
+        if not is_valid_record(record_type):
+            print("Invalid record type")
+            return
 
-     if not is_valid_record(record_type):
-        print("Invalid record type")
-
-     else:
         try:
-
             start = start_timer()
+            results = lookup(domain, record_type, selected_ip)
+            elapsed = stop_timer(start)
 
-            results = lookup(
-                domain,
-                record_type,
-                selected_ip
-            )
+            print_results(domain, record_type, results)
+            print(f"\nResolver Used : {selected_name} ({selected_ip})")
+            print(f"Lookup Time   : {elapsed * 1000:.2f} ms")
 
-            end = stop_timer(start)
-
-            print_results(
-                domain,
-                record_type,
-                results
-            )
-
-            print(
-                f"\nResolver Used: "
-                f"{selected_name} ({selected_ip})"
-            )
-
-            print(
-                f"\nLookup time: "
-                f"{end * 1000:.2f}ms\n"
-            )
+            # Extract IPs if record type contains them directly
+            ips_for_analysis = extract_ips(results, record_type)
 
         except dns.resolver.NXDOMAIN:
             print("Domain does not exist")
-
+            return
         except dns.resolver.NoAnswer:
             print("No record found")
-
+            return
         except dns.resolver.Timeout:
             print("Request timed out")
-
+            return
         except Exception as e:
             print(f"Error: {e}")
+            return
 
     elif operation == "2":
+        ip_address = input("Enter IP Address: ")
 
-     ip_address = input("Enter IP Address: ")
+        if not is_valid_ip(ip_address):
+            print("Invalid IP Address")
+            return
 
-     if not is_valid_ip(ip_address):
-        print("Invalid IP Address")
-        return
+        try:
+            start = start_timer()
+            ptr_results = reverse_lookup(ip_address, selected_ip)
+            elapsed = stop_timer(start)
 
-     try:
+            print_reverse_results(ip_address, ptr_results)
+            print(f"\nResolver Used : {selected_name} ({selected_ip})")
+            print(f"Lookup Time   : {elapsed * 1000:.2f} ms")
 
-        start = start_timer()
+            # The input IP is directly available for analysis
+            ips_for_analysis = [ip_address]
 
-        results = reverse_lookup(
-            ip_address,
-            selected_ip
-        )
-
-        elapsed = stop_timer(start)
-
-        print_reverse_results(
-            ip_address,
-            results
-        )
-
-        print(
-            f"\nResolver Used: "
-            f"{selected_name} ({selected_ip})"
-        )
-
-        print(
-            f"\nLookup Time: "
-            f"{elapsed * 1000:.2f} ms"
-        )
-
-     except dns.resolver.NXDOMAIN:
-        print("No PTR record found")
-
-     except dns.resolver.Timeout:
-        print("Request timed out")
-
-     except Exception as e:
-        print(f"Error: {e}")      
+        except dns.resolver.NXDOMAIN:
+            print("No PTR record found")
+            return
+        except dns.resolver.Timeout:
+            print("Request timed out")
+            return
+        except Exception as e:
+            print(f"Error: {e}")
+            return
 
     else:
-     print("Invalid operation")     
+        print("Invalid operation")
+        return
+
+    # Shared infrastructure analysis block
+    # Runs after either branch if IPs are available
+    if ips_for_analysis:
+        run_infrastructure_analysis(ips_for_analysis, selected_name, selected_ip)
+    else:
+        print("\n(Infrastructure analysis not available for this record type)")
 
 
 if __name__ == "__main__":
