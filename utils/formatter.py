@@ -1,4 +1,4 @@
-def print_results(domain, record_type, results):
+def print_results(domain, record_type, results, ttl):
 
     print("\n==============================")
     print(f"{record_type} Records for {domain}")
@@ -6,6 +6,8 @@ def print_results(domain, record_type, results):
 
     for index, data in enumerate(results, start=1):
         print(f"{index}. {data}")
+
+    print(f"\nTTL : {ttl} seconds")
 
 def print_reverse_results(ip_address, results):
 
@@ -38,3 +40,21 @@ def print_ptr_intelligence(intel):
 
     print(f"  Confidence : {intel['confidence']}")
     print()
+
+def print_dnssec_info(domain, enabled, dnskeys):
+    print("\n==============================")
+    print("DNSSEC Information")
+    print("==============================\n")
+
+    print(f"Domain : {domain}")
+
+    if enabled:
+        print("DNSSEC : Enabled\n")
+
+        print("DNSKEY Records:\n")
+
+        for index, key in enumerate(dnskeys, start=1):
+            print(f"{index}. {key}")
+
+    else:
+        print("DNSSEC : Not Detected")

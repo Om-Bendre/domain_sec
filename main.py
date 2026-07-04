@@ -1,12 +1,13 @@
 import dns.resolver
 from utils.resolver import lookup
-from utils.formatter import print_results, print_reverse_results, print_ptr_intelligence
+from utils.formatter import print_results, print_reverse_results, print_ptr_intelligence, print_dnssec_info
 from utils.validator import is_valid_record, is_valid_ip
 from utils.timer import start_timer, stop_timer
 from utils.dns_servers import dns_cust_servers
 from utils.reverse_lookup import reverse_lookup
 from utils.ip_extractor import extract_ips
-from analysis.ptr_intel import analyze_ptr
+from intelligence.ptr_intel import analyze_ptr
+from utils.dnssec import check_dnssec
 
 
 def run_infrastructure_analysis(ips, selected_name, selected_ip):
@@ -50,6 +51,7 @@ def main():
     print("\nChoose Operation:\n")
     print("1. Forward Lookup")
     print("2. Reverse Lookup")
+    print("3. DNSSEC check")
     operation = input("\nEnter choice: ")
 
     print("\nChoose DNS Resolver:\n")
@@ -77,10 +79,10 @@ def main():
 
         try:
             start = start_timer()
-            results = lookup(domain, record_type, selected_ip)
+            results, ttl = lookup(domain, record_type, selected_ip)
             elapsed = stop_timer(start)
 
-            print_results(domain, record_type, results)
+            print_results(domain, record_type, results, ttl)
             print(f"\nResolver Used : {selected_name} ({selected_ip})")
             print(f"Lookup Time   : {elapsed * 1000:.2f} ms")
 
@@ -128,6 +130,38 @@ def main():
         except Exception as e:
             print(f"Error: {e}")
             return
+        
+    elif operation == "3":
+        domain = input("Enter domain: ")
+
+        try:
+
+            start = start_timer()
+
+            enabled, dnskeys = check_dnssec(
+                domain,
+                selected_ip
+            )
+
+            elapsed = stop_timer(start)
+
+            print_dnssec_info(
+                domain,
+                enabled,
+                dnskeys
+            )
+
+            print(f"\nResolver Used : {selected_name} ({selected_ip})")
+            print(f"Lookup Time   : {elapsed * 1000:.2f} ms")
+
+        except dns.resolver.NXDOMAIN:
+            print("Domain does not exist")
+
+        except dns.resolver.Timeout:
+            print("Request timed out")
+
+        except Exception as e:
+         print(f"Error : {e}")
 
     else:
         print("Invalid operation")
