@@ -8,6 +8,12 @@ from utils.reverse_lookup import reverse_lookup
 from utils.ip_extractor import extract_ips
 from intelligence.ptr_intel import analyze_ptr
 from utils.dnssec import check_dnssec
+from utils.whois_lookup import lookup_whois
+from utils.formatter import print_whois_info, print_asn_info, print_geoip_info, print_ipv6_info
+from utils.asn_lookup import lookup_asn
+from utils.geoip_lookup import lookup_geoip
+from utils.ipv6_analysis import analyze_ipv6
+
 
 
 def run_infrastructure_analysis(ips, selected_name, selected_ip):
@@ -38,6 +44,11 @@ def run_infrastructure_analysis(ips, selected_name, selected_ip):
             for record in ptr_results:
                 intel = analyze_ptr(str(record))
                 print_ptr_intelligence(intel)
+                geo = lookup_geoip(ip)
+                print_geoip_info(ip, geo)
+                asn_info = lookup_asn(ip)
+                print_asn_info(ip, asn_info)
+
 
         except dns.resolver.NXDOMAIN:
             print(f"  No PTR record found for {ip}")
@@ -52,6 +63,7 @@ def main():
     print("1. Forward Lookup")
     print("2. Reverse Lookup")
     print("3. DNSSEC check")
+    print("4. WHOIS lookup")
     operation = input("\nEnter choice: ")
 
     print("\nChoose DNS Resolver:\n")
@@ -83,6 +95,12 @@ def main():
             elapsed = stop_timer(start)
 
             print_results(domain, record_type, results, ttl)
+
+            if record_type == "AAAA":
+             for ipv6 in results:
+              info = analyze_ipv6(str(ipv6))
+              print_ipv6_info(info)
+              
             print(f"\nResolver Used : {selected_name} ({selected_ip})")
             print(f"Lookup Time   : {elapsed * 1000:.2f} ms")
 
@@ -162,6 +180,25 @@ def main():
 
         except Exception as e:
          print(f"Error : {e}")
+
+    elif operation == "4":
+
+     domain = input("Enter domain: ")
+
+     try:
+
+        start = start_timer()
+
+        info = lookup_whois(domain)
+
+        elapsed = stop_timer(start)
+
+        print_whois_info(info)
+
+        print(f"\nLookup Time   : {elapsed * 1000:.2f} ms")
+
+     except Exception as e:
+        print(f"Error: {e}")
 
     else:
         print("Invalid operation")

@@ -1,4 +1,3 @@
-# utils/ip_extractor.py
 
 def extract_ips(results, record_type):
     """
