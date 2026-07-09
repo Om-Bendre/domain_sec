@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from core.models.scan_context import ScanContext
 from core.models.finding import Finding
 from core.models.scan_error import ScanError
-from core.models.enums import ScanStatus
+from core.enums.scan import ScanStatus
 
 
 class ScanResult(BaseModel):
