@@ -12,7 +12,7 @@ from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
 from core.enums.scan import TargetType
 from core.models.requests.dns_request import DNSRequest
-
+from core.models.requests.scan_request import ScanRequest
 from scanners.dns.client import DNSClient
 from scanners.dns.normalizer import DNSNormalizer
 from scanners.dns.mapper import DNSMapper
