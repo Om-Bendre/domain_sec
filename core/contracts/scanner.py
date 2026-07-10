@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from core.models.scan_result import ScanResult
 from core.models.configuration import Configuration
+from core.models.requests.scan_request import ScanRequest
 
 
 class BaseScanner(ABC):
@@ -12,12 +13,7 @@ class BaseScanner(ABC):
     @abstractmethod
     def scan(
         self,
-        target: str,
+        request: ScanRequest,
         configuration: Configuration
     ) -> ScanResult:
-        """
-        Execute a scan.
-
-        Must return a ScanResult.
-        """
         pass

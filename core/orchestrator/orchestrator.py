@@ -1,5 +1,5 @@
 from core.models.configuration import Configuration
-
+from core.models.scan_request import ScanRequest
 from scanners.dns.scanner import DNSScanner
 
 
@@ -16,7 +16,7 @@ class Orchestrator:
     def run(
         self,
         scanner_name: str,
-        target: str,
+        request: ScanRequest,
     ):
 
         scanner = self.scanners.get(scanner_name)
@@ -27,6 +27,6 @@ class Orchestrator:
             )
 
         return scanner.scan(
-            target,
+            request,
             self.configuration
         )
