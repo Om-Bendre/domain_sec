@@ -1,5 +1,5 @@
 from core.models.configuration import Configuration
-from core.models.scan_request import ScanRequest
+from core.models.requests.scan_request import ScanRequest
 from scanners.dns.scanner import DNSScanner
 
 

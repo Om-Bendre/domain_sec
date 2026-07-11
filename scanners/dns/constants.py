@@ -1,1 +1,0 @@
-RECORD_TYPE = "record_type"
