@@ -1,17 +1,12 @@
-from abc import ABC, abstractmethod
-
-from core.models.scan_result import ScanResult
+from abc import ABC
+from abc import abstractmethod
 
 
 class BaseIntelligence(ABC):
-    """
-    Base class for all SecureCheck intelligence modules.
-    """
 
     @abstractmethod
-    def analyze(self, result: ScanResult) -> ScanResult:
-        """
-        Enrich scan findings without assigning severity
-        or risk scores.
-        """
+    def analyze(
+        self,
+        normalized: dict,
+    ) -> dict:
         pass
