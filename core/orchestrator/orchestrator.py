@@ -1,6 +1,7 @@
 from core.models.configuration import Configuration
 from core.models.requests.scan_request import ScanRequest
 from scanners.dns.scanner import DNSScanner
+from scanners.whois.scanner import WHOISScanner
 
 
 class Orchestrator:
@@ -11,6 +12,7 @@ class Orchestrator:
 
         self.scanners = {
             "dns": DNSScanner(),
+            "whois": WHOISScanner()
         }
 
     def run(
