@@ -66,7 +66,7 @@ class ProviderDetector(BaseIntelligence):
 
     }
 
-    def detect(
+    def analyze(
         self,
         normalized,
     ):
