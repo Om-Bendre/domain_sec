@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from typing import Any
 from core.models.scan_context import ScanContext
 from core.models.finding import Finding
 from core.models.scan_error import ScanError
@@ -18,5 +18,7 @@ class ScanResult(BaseModel):
     context: ScanContext
 
     findings: list[Finding] = []
+
+    raw_data: dict[str, Any] = {}
 
     errors: list[ScanError] = []
