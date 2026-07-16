@@ -18,8 +18,10 @@ class CertificateAnalyzer(BaseIntelligence):
 
         return {
 
-            "self_signed":
+            "self_signed": subject == issuer,
 
-                subject == issuer,
+            "wildcard_certificate":
+
+                subject.startswith("*."),
 
         }

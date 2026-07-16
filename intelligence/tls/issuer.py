@@ -24,21 +24,16 @@ class IssuerAnalyzer(BaseIntelligence):
         normalized,
     ):
 
-        issuer = (
-
+        organization = (
             normalized.get(
-
-                "issuer_common_name"
-
+                "issuer_organization"
             )
-
             or ""
-
         )
 
         trusted = any(
 
-            ca.lower() in issuer.lower()
+            ca.lower() in organization.lower()
 
             for ca in self.TRUSTED
 

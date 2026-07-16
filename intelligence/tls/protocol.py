@@ -20,12 +20,14 @@ class ProtocolAnalyzer(BaseIntelligence):
 
         return {
 
-            "modern_tls": modern,
+            "protocol_category": (
 
-            "protocol_generation": (
                 "Modern"
+
                 if modern
+
                 else "Legacy"
+
             ),
 
         }

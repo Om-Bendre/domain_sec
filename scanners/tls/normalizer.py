@@ -29,6 +29,14 @@ class TLSNormalizer:
 
         )
 
+        sans = [
+            value
+            for key, value in certificate.get(
+                "subjectAltName",
+                []
+            )
+        ]
+
         return {
 
             "tls_version":
@@ -39,9 +47,6 @@ class TLSNormalizer:
 
                 raw_data["cipher"][0],
 
-            "cipher_protocol":
-
-                raw_data["cipher"][1],
 
             "cipher_bits":
 
@@ -93,5 +98,34 @@ class TLSNormalizer:
                     "caIssuers",
                     [],
                 ),
+
+            "certificate_version": f"X.509 v{certificate.get('version')}",
+
+            "issuer_organization": issuer.get("organizationName"),
+
+            "issuer_country": issuer.get("countryName"),
+
+            "san_count": len(sans),
+
+            "primary_san": (
+                sans[0]
+                if sans
+                else None
+            ),
+
+            "crl_distribution_points": certificate.get(
+                "crlDistributionPoints",
+                [],
+            ),
+
+            "subject_alt_names": sans,
+
+            "ocsp_urls": list(
+                certificate.get("OCSP", [])
+            ),
+
+            "ca_issuers": list(
+                certificate.get("caIssuers", [])
+            ),
 
         }

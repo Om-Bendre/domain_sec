@@ -34,8 +34,7 @@ class ExpiryAnalyzer(BaseIntelligence):
 
         return {
 
-            "days_until_expiry": remaining,
+            "expires_in": f"{remaining} days",
 
             "expired": remaining < 0,
-
         }
