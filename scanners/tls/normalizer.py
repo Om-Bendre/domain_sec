@@ -8,124 +8,117 @@ class TLSNormalizer:
         certificate = raw_data["certificate"]
 
         subject = dict(
-
             x[0]
-
             for x in certificate.get(
                 "subject",
                 [],
             )
-
         )
 
         issuer = dict(
-
             x[0]
-
             for x in certificate.get(
                 "issuer",
                 [],
             )
-
         )
 
         sans = [
             value
             for key, value in certificate.get(
                 "subjectAltName",
-                []
+                [],
             )
         ]
 
         return {
 
             "tls_version":
-
                 raw_data["tls_version"],
 
             "cipher_suite":
-
                 raw_data["cipher"][0],
 
-
             "cipher_bits":
-
                 raw_data["cipher"][2],
 
             "subject_common_name":
-
                 subject.get("commonName"),
 
             "issuer_common_name":
-
                 issuer.get("commonName"),
 
-            "valid_from":
+            "issuer_organization":
+                issuer.get("organizationName"),
 
+            "issuer_country":
+                issuer.get("countryName"),
+
+            "valid_from":
                 certificate.get("notBefore"),
 
             "valid_until":
-
                 certificate.get("notAfter"),
 
             "serial_number":
-
                 certificate.get("serialNumber"),
 
+            "certificate_version":
+                f"X.509 v{certificate.get('version')}",
+
+            "san_count":
+                len(sans),
+
+            "primary_san":
+                sans[0] if sans else None,
+
             "subject_alt_names":
-
-                [
-
-                    value
-
-                    for key, value in certificate.get(
-                        "subjectAltName",
-                        [],
-                    )
-
-                ],
+                sans,
 
             "ocsp_urls":
-
-                certificate.get(
-                    "OCSP",
-                    [],
+                list(
+                    certificate.get(
+                        "OCSP",
+                        [],
+                    )
                 ),
 
             "ca_issuers":
-
-                certificate.get(
-                    "caIssuers",
-                    [],
+                list(
+                    certificate.get(
+                        "caIssuers",
+                        [],
+                    )
                 ),
 
-            "certificate_version": f"X.509 v{certificate.get('version')}",
+            "crl_distribution_points":
+                list(
+                    certificate.get(
+                        "crlDistributionPoints",
+                        [],
+                    )
+                ),
 
-            "issuer_organization": issuer.get("organizationName"),
+            # -------- Cryptography Fields --------
 
-            "issuer_country": issuer.get("countryName"),
+            "public_key_algorithm":
+                raw_data.get(
+                    "public_key_algorithm"
+                ),
 
-            "san_count": len(sans),
+            "public_key_size":
+                raw_data.get(
+                    "public_key_size"
+                ),
 
-            "primary_san": (
-                sans[0]
-                if sans
-                else None
-            ),
+            "signature_algorithm":
+                raw_data.get(
+                    "signature_algorithm"
+                ),
 
-            "crl_distribution_points": certificate.get(
-                "crlDistributionPoints",
-                [],
-            ),
-
-            "subject_alt_names": sans,
-
-            "ocsp_urls": list(
-                certificate.get("OCSP", [])
-            ),
-
-            "ca_issuers": list(
-                certificate.get("caIssuers", [])
-            ),
+            "certificate_fingerprint":
+                raw_data.get(
+                    "certificate_fingerprint"
+                ),
 
         }

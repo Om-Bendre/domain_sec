@@ -22,6 +22,7 @@ from intelligence.tls.cipher import CipherAnalyzer
 from intelligence.tls.certificate import CertificateAnalyzer
 from intelligence.tls.expiry import ExpiryAnalyzer
 from intelligence.tls.issuer import IssuerAnalyzer
+from intelligence.tls.key_analyzer import KeyAnalyzer
 
 class TLSScanner(BaseScanner):
 
@@ -43,6 +44,8 @@ class TLSScanner(BaseScanner):
             ExpiryAnalyzer(),
 
             IssuerAnalyzer(),
+
+            KeyAnalyzer(),
         ]
 
     def scan(
