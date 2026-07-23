@@ -26,6 +26,8 @@ class HTTPClient:
 
             "headers": dict(response.headers),
 
+            "raw_headers":response.raw.headers,
+
             "content_length": len(response.content),
 
             "response_time_ms":

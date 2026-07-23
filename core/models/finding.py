@@ -19,4 +19,6 @@ class Finding(BaseModel):
 
     description: str | None = None
 
+    entity: str | None = None
+
     metadata: dict[str, Any] = {}
