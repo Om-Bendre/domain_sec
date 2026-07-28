@@ -9,26 +9,28 @@ class PrefixAnalyzer:
 
         if name.startswith("__Host-"):
 
-            prefix = "__Host__"
+            return {
 
-            strength = "Very Strong"
+                "prefix": "__Host-",
 
-        elif name.startswith("__Secure-"):
+                "prefix_strength": "Very Strong",
 
-            prefix = "__Secure__"
+            }
 
-            strength = "Strong"
+        if name.startswith("__Secure-"):
 
-        else:
+            return {
 
-            prefix = "None"
+                "prefix": "__Secure-",
 
-            strength = "Normal"
+                "prefix_strength": "Strong",
+
+            }
 
         return {
 
-            "prefix": prefix,
+            "prefix": "None",
 
-            "prefix_strength": strength,
+            "prefix_strength": "Normal",
 
         }

@@ -7,3 +7,4 @@ class CookieRequest(BaseModel):
     """
 
     target: str
+    

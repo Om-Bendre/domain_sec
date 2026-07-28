@@ -20,14 +20,6 @@ class CookieMapper:
 
         "prefix": "Prefix",
 
-        "secure_strength": "Secure Strength",
-
-        "httponly_strength": "HttpOnly Strength",
-
-        "samesite_strength": "SameSite Strength",
-
-        "prefix_strength": "Prefix Strength",
-
     }
 
     SKIP_FIELDS = {
@@ -37,6 +29,14 @@ class CookieMapper:
         "value",
 
         "attributes",
+
+        "secure_strength",
+
+        "httponly_strength",
+
+        "samesite_strength",
+
+        "prefix_strength",
 
     }
 
@@ -52,8 +52,33 @@ class CookieMapper:
         for key, value in cookie.items():
 
             if key in self.SKIP_FIELDS:
-
                 continue
+
+            metadata = {}
+
+            if key == "secure":
+
+                metadata["rating"] = cookie.get(
+                    "secure_strength"
+                )
+
+            elif key == "httponly":
+
+                metadata["rating"] = cookie.get(
+                    "httponly_strength"
+                )
+
+            elif key == "samesite":
+
+                metadata["rating"] = cookie.get(
+                    "samesite_strength"
+                )
+
+            elif key == "prefix":
+
+                metadata["rating"] = cookie.get(
+                    "prefix_strength"
+                )
 
             findings.append(
 
@@ -61,17 +86,17 @@ class CookieMapper:
 
                     category="Cookie",
 
-                    entity=cookie_name,
+                    entity=cookie["name"],
 
                     name=self.DISPLAY_NAMES.get(
                         key,
-                        key.replace("_", " ").title(),
+                        key,
                     ),
 
                     value=value,
 
+                    metadata=metadata,
+
                 )
 
             )
-
-        return findings
