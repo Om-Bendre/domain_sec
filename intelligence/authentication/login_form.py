@@ -1,22 +1,24 @@
+LOGIN_FIELD_NAMES = {
+
+    "username",
+    "user",
+    "email",
+    "login",
+    "identifier",
+    "userid",
+
+}
+
+PASSWORD_FIELD_NAMES = {
+
+    "password",
+    "passwd",
+    "pass",
+
+}
+
+
 class LoginFormAnalyzer:
-
-    USERNAME_FIELDS = {
-
-        "username",
-        "user",
-        "email",
-        "login",
-
-    }
-
-    CSRF_FIELDS = {
-
-        "csrf",
-        "_csrf",
-        "csrf_token",
-        "_token",
-
-    }
 
     def analyze(
         self,
@@ -28,105 +30,64 @@ class LoginFormAnalyzer:
             [],
         )
 
-        login_form = None
-
         for form in forms:
 
-            has_password = False
-            has_username = False
+            username = None
+            password = None
 
             for field in form["inputs"]:
 
-                field_type = field.get(
-                    "type",
-                    "",
-                ).lower()
+                field_type = field["type"]
+                field_name = field["name"].lower()
 
-                field_name = (
-                    field.get(
-                        "name",
-                        "",
-                    ).lower()
-                )
+                #
+                # Password field
+                #
 
                 if field_type == "password":
 
-                    has_password = True
+                    password = field
 
-                if field_name in self.USERNAME_FIELDS:
+                #
+                # Username / Email field
+                #
 
-                    has_username = True
+                if (
+                    field_type in (
+                        "text",
+                        "email",
+                    )
+                    or field_name in LOGIN_FIELD_NAMES
+                ):
 
-            if has_password and has_username:
+                    username = field
 
-                login_form = form
+            if username and password:
 
-                break
+                return {
 
-        if login_form is None:
+                    "login_form_detected": True,
 
-            return {
+                    "username_field": username,
 
-                "login_form_detected": False,
+                    "password_field": password,
 
-            }
+                    "method": form["method"],
 
-        csrf = False
+                    "action": form["action"],
 
-        username_autocomplete = None
-
-        password_autocomplete = None
-
-        for field in login_form["inputs"]:
-
-            field_name = (
-                field.get(
-                    "name",
-                    "",
-                ).lower()
-            )
-
-            field_type = (
-                field.get(
-                    "type",
-                    "",
-                ).lower()
-            )
-
-            if field_name in self.CSRF_FIELDS:
-
-                csrf = True
-
-            if field_name in self.USERNAME_FIELDS:
-
-                username_autocomplete = field.get(
-                    "autocomplete"
-                )
-
-            if field_type == "password":
-
-                password_autocomplete = field.get(
-                    "autocomplete"
-                )
+                }
 
         return {
 
-            "login_form_detected": True,
+            "login_form_detected": False,
 
-            "method": login_form.get(
-                "method"
-            ),
+            "username_field": None,
 
-            "action": login_form.get(
-                "action"
-            ),
+            "password_field": None,
 
-            "csrf_token": csrf,
+            "method": None,
 
-            "username_autocomplete":
-                username_autocomplete,
-
-            "password_autocomplete":
-                password_autocomplete,
+            "action": None,
 
         }

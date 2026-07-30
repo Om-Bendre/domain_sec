@@ -14,15 +14,11 @@ class HTTPClient:
             timeout=10,
         )
 
-        #
-        # Preserve every Set-Cookie header separately
-        #
-
         original_response = response.raw._original_response
 
         cookie_headers = original_response.msg.get_all(
             "Set-Cookie",
-            []
+            [],
         )
 
         return {

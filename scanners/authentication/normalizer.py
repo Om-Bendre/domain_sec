@@ -1,23 +1,18 @@
 from bs4 import BeautifulSoup
 
-from scanners.cookies.normalizer import CookieNormalizer
-
 
 class AuthenticationNormalizer:
+    """
+    Converts raw HTTP data into a normalized structure.
 
-    def __init__(self):
-
-        self.cookie_normalizer = CookieNormalizer()
+    """
 
     def normalize(
         self,
         raw_data: dict,
     ) -> dict:
 
-        html = raw_data.get(
-            "html",
-            ""
-        )
+        html = raw_data.get("html", "")
 
         soup = BeautifulSoup(
             html,
@@ -29,31 +24,24 @@ class AuthenticationNormalizer:
         for form in soup.find_all("form"):
 
             forms.append(
-
-                self._parse_form(
-                    form,
-                )
-
+                self._parse_form(form)
             )
 
         return {
 
-            "forms": forms,
-
-            "cookies": self.cookie_normalizer.normalize(
-                raw_data
-            ),
+            "page_url": raw_data.get("url"),
 
             "headers": raw_data.get(
                 "headers",
-                {}
+                {},
             ),
 
-            "page_url": raw_data.get(
-                "url"
+            "cookies": raw_data.get(
+                "cookie_headers",
+                [],
             ),
 
-            "html": html,
+            "forms": forms,
 
         }
 
@@ -62,81 +50,82 @@ class AuthenticationNormalizer:
         form,
     ) -> dict:
 
-        inputs = []
-
-        for field in form.find_all("input"):
-
-            inputs.append(
-
-                self._parse_input(
-                    field,
-                )
-
-            )
-
         return {
 
-            "method": (
-                form.get(
-                    "method",
-                    "GET",
-                ).upper()
+            "action": form.get(
+                "action",
+                "",
             ),
 
-            "action": form.get(
-                "action"
+            "method": form.get(
+                "method",
+                "GET",
+            ).upper(),
+
+            "autocomplete": form.get(
+                "autocomplete",
+                "",
             ),
 
             "id": form.get(
-                "id"
+                "id",
+                "",
             ),
 
             "name": form.get(
-                "name"
+                "name",
+                "",
             ),
 
-            "inputs": inputs,
+            "inputs": [
+
+                self._parse_input(inp)
+
+                for inp in form.find_all("input")
+
+            ],
 
         }
 
     def _parse_input(
         self,
-        field,
+        inp,
     ) -> dict:
 
         return {
 
-            "type": field.get(
+            "type": inp.get(
                 "type",
                 "text",
+            ).lower(),
+
+            "name": inp.get(
+                "name",
+                "",
             ),
 
-            "name": field.get(
-                "name"
+            "id": inp.get(
+                "id",
+                "",
             ),
 
-            "id": field.get(
-                "id"
+            "value": inp.get(
+                "value",
+                "",
             ),
 
-            "value": field.get(
-                "value"
+            "placeholder": inp.get(
+                "placeholder",
+                "",
             ),
 
-            "placeholder": field.get(
-                "placeholder"
+            "autocomplete": inp.get(
+                "autocomplete",
+                "",
             ),
 
-            "autocomplete": field.get(
-                "autocomplete"
-            ),
-
-            "required": field.has_attr(
-                "required"
-            ),
-
-            "attributes": dict(
-                field.attrs
+            "required": inp.has_attr(
+                "required",
             ),
 
         }
