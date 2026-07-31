@@ -1,19 +1,14 @@
+from core.models.finding import Finding
+
+
 LOGIN_FIELD_NAMES = {
 
     "username",
     "user",
+    "userid",
     "email",
     "login",
     "identifier",
-    "userid",
-
-}
-
-PASSWORD_FIELD_NAMES = {
-
-    "password",
-    "passwd",
-    "pass",
 
 }
 
@@ -23,7 +18,9 @@ class LoginFormAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> dict:
+    ) -> list[Finding]:
+
+        findings = []
 
         forms = normalized_data.get(
             "forms",
@@ -32,62 +29,127 @@ class LoginFormAnalyzer:
 
         for form in forms:
 
-            username = None
-            password = None
+            username_field = None
+            password_field = None
 
             for field in form["inputs"]:
 
-                field_type = field["type"]
-                field_name = field["name"].lower()
+                field_type = field.get(
+                    "type",
+                    "",
+                )
 
-                #
-                # Password field
-                #
+                field_name = field.get(
+                    "name",
+                    "",
+                ).lower()
 
                 if field_type == "password":
 
-                    password = field
-
-                #
-                # Username / Email field
-                #
+                    password_field = field
 
                 if (
-                    field_type in (
+
+                    field_type in {
+
                         "text",
+
                         "email",
-                    )
-                    or field_name in LOGIN_FIELD_NAMES
+
+                    }
+
+                    or
+
+                    field_name in LOGIN_FIELD_NAMES
+
                 ):
 
-                    username = field
+                    username_field = field
 
-            if username and password:
+            if not (
 
-                return {
+                username_field
 
-                    "login_form_detected": True,
+                and
 
-                    "username_field": username,
+                password_field
 
-                    "password_field": password,
+            ):
 
-                    "method": form["method"],
+                continue
 
-                    "action": form["action"],
+            findings.append(
 
-                }
+                Finding(
 
-        return {
+                    category="Authentication",
 
-            "login_form_detected": False,
+                    name="login_form",
 
-            "username_field": None,
+                    value=True,
 
-            "password_field": None,
+                    description="Login form detected",
 
-            "method": None,
+                )
 
-            "action": None,
+            )
 
-        }
+            findings.append(
+
+                Finding(
+
+                    category="Authentication",
+
+                    name="form_method",
+
+                    value=form["method"],
+
+                )
+
+            )
+
+            findings.append(
+
+                Finding(
+
+                    category="Authentication",
+
+                    name="form_action",
+
+                    value=form["action"],
+
+                )
+
+            )
+
+            findings.append(
+
+                Finding(
+
+                    category="Authentication",
+
+                    name="username_field",
+
+                    value=username_field["name"],
+
+                )
+
+            )
+
+            findings.append(
+
+                Finding(
+
+                    category="Authentication",
+
+                    name="password_field",
+
+                    value=password_field["name"],
+
+                )
+
+            )
+
+            return findings
+
+        return findings

@@ -1,58 +1,61 @@
+from core.models.finding import Finding
+
+
+OAUTH_PROVIDERS = {
+
+    "accounts.google.com": "Google",
+
+    "github.com/login/oauth": "GitHub",
+
+    "facebook.com": "Facebook",
+
+    "login.microsoftonline.com": "Microsoft",
+
+    "appleid.apple.com": "Apple",
+
+    "linkedin.com/oauth": "LinkedIn",
+
+    "auth0.com": "Auth0",
+
+    "okta.com": "Okta",
+
+}
+
+
 class OAuthAnalyzer:
-
-    PROVIDERS = {
-
-        "google": "Google",
-        "github": "GitHub",
-        "facebook": "Facebook",
-        "microsoft": "Microsoft",
-        "apple": "Apple",
-        "linkedin": "LinkedIn",
-        "auth0": "Auth0",
-        "okta": "Okta",
-
-    }
 
     def analyze(
         self,
         normalized_data: dict,
-    ) -> dict:
+    ) -> list[Finding]:
+
+        findings = []
 
         html = normalized_data.get(
             "html",
             "",
         ).lower()
 
-        providers = []
+        for endpoint, provider in OAUTH_PROVIDERS.items():
 
-        for keyword, provider in self.PROVIDERS.items():
+            if endpoint.lower() in html:
 
-            if keyword in html:
+                findings.append(
 
-                providers.append(
-                    provider
+                    Finding(
+
+                        category="Authentication",
+
+                        entity="OAuth",
+
+                        name="oauth_provider",
+
+                        value=provider,
+
+                        description="OAuth provider detected",
+
+                    )
+
                 )
 
-        oidc_detected = (
-            "openid" in html
-            or "openid-connect" in html
-            or "oidc" in html
-        )
-
-        oauth_detected = (
-            len(providers) > 0
-            or oidc_detected
-        )
-
-        return {
-
-            "oauth_detected":
-                oauth_detected,
-
-            "oidc_detected":
-                oidc_detected,
-
-            "providers":
-                providers,
-
-        }
+        return findings

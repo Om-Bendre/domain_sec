@@ -1,3 +1,6 @@
+from core.models.finding import Finding
+
+
 COMMON_SESSION_COOKIES = {
 
     "phpsessid",
@@ -28,7 +31,9 @@ class SessionAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> dict:
+    ) -> list[Finding]:
+
+        findings = []
 
         cookies = normalized_data.get(
             "cookies",
@@ -39,42 +44,26 @@ class SessionAnalyzer:
 
             lower_cookie = cookie.lower()
 
-            #
-            # Known session cookie names
-            #
+            for session_name in COMMON_SESSION_COOKIES:
 
-            for name in COMMON_SESSION_COOKIES:
+                if session_name in lower_cookie:
 
-                if name in lower_cookie:
+                    findings.append(
 
-                    return {
+                        Finding(
 
-                        "session_detected": True,
+                            category="Authentication",
 
-                        "session_cookie": name,
+                            entity="Session",
 
-                    }
+                            name="session_cookie",
 
-            #
-            # Generic session heuristic
-            #
+                            value=session_name,
 
-            if "session" in lower_cookie:
+                            description="Session cookie detected",
 
-                cookie_name = lower_cookie.split("=")[0]
+                        )
 
-                return {
+                    )
 
-                    "session_detected": True,
-
-                    "session_cookie": cookie_name,
-
-                }
-
-        return {
-
-            "session_detected": False,
-
-            "session_cookie": None,
-
-        }
+        return findings

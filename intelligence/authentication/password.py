@@ -1,16 +1,19 @@
+from core.models.finding import Finding
+
+
 class PasswordAnalyzer:
 
     def analyze(
         self,
         normalized_data: dict,
-    ) -> dict:
+    ) -> list[Finding]:
+
+        findings = []
 
         forms = normalized_data.get(
             "forms",
             [],
         )
-
-        password_field = None
 
         for form in forms:
 
@@ -19,57 +22,107 @@ class PasswordAnalyzer:
                 if field.get(
                     "type",
                     "",
-                ).lower() == "password":
+                ) != "password":
 
-                    password_field = field
+                    continue
 
-                    break
+                findings.append(
 
-            if password_field:
+                    Finding(
 
-                break
+                        category="Authentication",
 
-        if password_field is None:
+                        entity="Password",
 
-            return {
+                        name="password_field",
 
-                "password_field_detected": False,
+                        value=True,
 
-            }
+                        description="Password field detected",
 
-        return {
+                    )
 
-            "password_field_detected": True,
+                )
 
-            "autocomplete":
-                password_field.get(
-                    "autocomplete"
-                ),
+                findings.append(
 
-            "required":
-                password_field.get(
-                    "required"
-                ),
+                    Finding(
 
-            "minlength":
-                password_field.get(
+                        category="Authentication",
+
+                        entity="Password",
+
+                        name="autocomplete",
+
+                        value=field.get(
+                            "autocomplete",
+                        ),
+
+                    )
+
+                )
+
+                findings.append(
+
+                    Finding(
+
+                        category="Authentication",
+
+                        entity="Password",
+
+                        name="required",
+
+                        value=field.get(
+                            "required",
+                        ),
+
+                    )
+
+                )
+
+                attributes = field.get(
                     "attributes",
                     {},
-                ).get(
-                    "minlength"
-                ),
+                )
 
-            "maxlength":
-                password_field.get(
-                    "attributes",
-                    {},
-                ).get(
-                    "maxlength"
-                ),
+                if "minlength" in attributes:
 
-            "placeholder":
-                password_field.get(
-                    "placeholder"
-                ),
+                    findings.append(
 
-        }
+                        Finding(
+
+                            category="Authentication",
+
+                            entity="Password",
+
+                            name="minlength",
+
+                            value=attributes[
+                                "minlength"
+                            ],
+
+                        )
+
+                    )
+
+                if "maxlength" in attributes:
+
+                    findings.append(
+
+                        Finding(
+
+                            category="Authentication",
+
+                            entity="Password",
+
+                            name="maxlength",
+
+                            value=attributes[
+                                "maxlength"
+                            ],
+
+                        )
+
+                    )
+
+        return findings

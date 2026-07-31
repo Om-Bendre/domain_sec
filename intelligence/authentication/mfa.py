@@ -1,45 +1,63 @@
+from core.models.finding import Finding
+
+
+MFA_KEYWORDS = {
+
+    "otp": "OTP",
+
+    "totp": "TOTP",
+
+    "2fa": "2FA",
+
+    "mfa": "MFA",
+
+    "webauthn": "WebAuthn",
+
+    "passkey": "Passkey",
+
+    "authenticator": "Authenticator",
+
+    "verification code": "Verification Code",
+
+    "one-time password": "One Time Password",
+
+}
+
+
 class MFAAnalyzer:
-
-    MFA_KEYWORDS = {
-
-        "otp",
-        "totp",
-        "2fa",
-        "mfa",
-        "verification code",
-        "one-time password",
-        "authenticator",
-        "passkey",
-        "webauthn",
-
-    }
 
     def analyze(
         self,
         normalized_data: dict,
-    ) -> dict:
+    ) -> list[Finding]:
+
+        findings = []
 
         html = normalized_data.get(
             "html",
             "",
         ).lower()
 
-        detected = []
-
-        for keyword in self.MFA_KEYWORDS:
+        for keyword, method in MFA_KEYWORDS.items():
 
             if keyword in html:
 
-                detected.append(
-                    keyword
+                findings.append(
+
+                    Finding(
+
+                        category="Authentication",
+
+                        entity="MFA",
+
+                        name="mfa_method",
+
+                        value=method,
+
+                        description="Multi-factor authentication indicator detected",
+
+                    )
+
                 )
 
-        return {
-
-            "mfa_detected":
-                len(detected) > 0,
-
-            "mfa_methods":
-                detected,
-
-        }
+        return findings

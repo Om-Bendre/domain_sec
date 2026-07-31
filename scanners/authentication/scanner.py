@@ -9,13 +9,13 @@ from core.models.scan_context import ScanContext
 from core.models.scan_error import ScanError
 from core.models.scan_result import ScanResult
 
-from scanners.authentication.client import AuthClient
-
+from scanners.authentication.client import AuthenticationClient
 from scanners.authentication.normalizer import AuthenticationNormalizer
 from scanners.authentication.mapper import AuthenticationMapper
 
 from intelligence.authentication.login_form import LoginFormAnalyzer
 from intelligence.authentication.session import SessionAnalyzer
+from intelligence.authentication.csrf import CSRFAnalyzer
 from intelligence.authentication.jwt import JWTAnalyzer
 from intelligence.authentication.oauth import OAuthAnalyzer
 from intelligence.authentication.mfa import MFAAnalyzer
@@ -28,7 +28,7 @@ class AuthenticationScanner:
 
     def __init__(self):
 
-        self.client = AuthClient()
+        self.client = AuthenticationClient()
 
         self.normalizer = AuthenticationNormalizer()
 
@@ -39,6 +39,8 @@ class AuthenticationScanner:
             LoginFormAnalyzer(),
 
             SessionAnalyzer(),
+
+            CSRFAnalyzer(),
 
             JWTAnalyzer(),
 
@@ -56,11 +58,16 @@ class AuthenticationScanner:
         configuration,
     ) -> ScanResult:
 
-        parsed = urlparse(request.target)
+        parsed = urlparse(
+            request.target,
+        )
 
         if parsed.scheme and parsed.netloc:
+
             target_type = TargetType.URL
+
         else:
+
             target_type = TargetType.DOMAIN
 
         start = perf_counter()
@@ -86,27 +93,35 @@ class AuthenticationScanner:
         try:
 
             raw_data = self.client.query(
+
                 request.target,
+
             )
 
             normalized_data = self.normalizer.normalize(
+
                 raw_data,
+
             )
 
-            authentication_data = {}
+            findings = []
 
             for analyzer in self.analyzers:
 
-                authentication_data.update(
+                findings.extend(
 
                     analyzer.analyze(
+
                         normalized_data,
+
                     )
 
                 )
 
             findings = self.mapper.map(
-                authentication_data,
+
+                findings,
+
             )
 
             context.duration_ms = (

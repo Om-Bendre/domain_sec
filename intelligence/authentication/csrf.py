@@ -1,3 +1,6 @@
+from core.models.finding import Finding
+
+
 COMMON_CSRF_NAMES = {
 
     "csrf",
@@ -22,7 +25,9 @@ class CSRFAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> dict:
+    ) -> list[Finding]:
+
+        findings = []
 
         forms = normalized_data.get(
             "forms",
@@ -37,22 +42,26 @@ class CSRFAnalyzer:
 
                     continue
 
-                name = field["name"].lower()
+                field_name = field["name"].lower()
 
-                if name in COMMON_CSRF_NAMES:
+                if field_name in COMMON_CSRF_NAMES:
 
-                    return {
+                    findings.append(
 
-                        "csrf_detected": True,
+                        Finding(
 
-                        "csrf_field": field,
+                            category="Authentication",
 
-                    }
+                            entity="CSRF",
 
-        return {
+                            name="csrf_token",
 
-            "csrf_detected": False,
+                            value=field_name,
 
-            "csrf_field": None,
+                            description="Hidden CSRF token detected",
 
-        }
+                        )
+
+                    )
+
+        return findings

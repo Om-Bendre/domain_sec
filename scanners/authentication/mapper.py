@@ -5,25 +5,7 @@ class AuthenticationMapper:
 
     def map(
         self,
-        authentication_data: dict,
+        findings: list[Finding],
     ) -> list[Finding]:
-
-        findings = []
-
-        for key, value in authentication_data.items():
-
-            findings.append(
-
-                Finding(
-
-                    category="Authentication",
-
-                    name=key,
-
-                    value=value,
-
-                )
-
-            )
 
         return findings
