@@ -3,39 +3,103 @@ from datetime import datetime
 
 class WHOISNormalizer:
 
-    def normalize(
+    def _first(
         self,
-        raw_data,
+        value,
     ):
 
-        def normalize_value(value):
+        if isinstance(
+            value,
+            list,
+        ):
 
-            if isinstance(value, list):
+            return value[0] if value else None
 
-                cleaned = []
+        return value
 
-                for item in value:
+    def _list(
+        self,
+        value,
+    ):
 
-                    if isinstance(item, datetime):
-                        item = item.isoformat()
+        if value is None:
 
-                    if item not in cleaned:
-                        cleaned.append(item)
+            return []
 
-                return cleaned
-
-            if isinstance(value, datetime):
-                return value.isoformat()
+        if isinstance(
+            value,
+            list,
+        ):
 
             return value
 
+        return [value]
+
+    def normalize(
+        self,
+        raw_data: dict,
+    ) -> dict:
+
         return {
-            "domain_name": normalize_value(raw_data.domain_name),
-            "registrar": normalize_value(raw_data.registrar),
-            "creation_date": normalize_value(raw_data.creation_date),
-            "expiration_date": normalize_value(raw_data.expiration_date),
-            "updated_date": normalize_value(raw_data.updated_date),
-            "name_servers": normalize_value(raw_data.name_servers),
-            "status": normalize_value(raw_data.status),
-            "emails": normalize_value(raw_data.emails),
+
+            "registrar":
+                self._first(
+                    raw_data.get("registrar"),
+                ),
+
+            "registrar_url":
+                self._first(
+                    raw_data.get("registrar_url"),
+                ),
+
+            "registrar_iana_id":
+                self._first(
+                    raw_data.get("registrar_iana_id"),
+                ),
+
+            "creation_date":
+                self._first(
+                    raw_data.get("creation_date"),
+                ),
+
+            "updated_date":
+                self._first(
+                    raw_data.get("updated_date"),
+                ),
+
+            "expiration_date":
+                self._first(
+                    raw_data.get("expiration_date"),
+                ),
+
+            "status":
+                self._list(
+                    raw_data.get("status"),
+                ),
+
+            "name_servers":
+                self._list(
+                    raw_data.get("name_servers"),
+                ),
+
+            "registrant_country":
+                self._first(
+                    raw_data.get("registrant_country"),
+                ),
+
+            "registrant_organization":
+                self._first(
+                    raw_data.get("registrant_organization"),
+                ),
+
+            "registrant_email":
+                self._first(
+                    raw_data.get("registrant_email"),
+                ),
+
+            "abuse_email":
+                self._first(
+                    raw_data.get("abuse_email"),
+                ),
+
         }
