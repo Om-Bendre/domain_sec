@@ -1,40 +1,57 @@
-from datetime import datetime
-
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class ExpiryAnalyzer(BaseIntelligence):
+class ExpiryAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        expires = normalized.get(
+        findings = []
+
+        valid_from = normalized_data.get(
+            "valid_from",
+        )
+
+        valid_until = normalized_data.get(
             "valid_until",
         )
 
-        if not expires:
+        if valid_from:
 
-            return {}
+            findings.append(
 
-        expiry = datetime.strptime(
+                Finding(
 
-            expires,
+                    category="TLS",
 
-            "%b %d %H:%M:%S %Y %Z",
+                    entity="Certificate",
 
-        )
+                    name="valid_from",
 
-        remaining = (
+                    value=valid_from,
 
-            expiry - datetime.utcnow()
+                )
 
-        ).days
+            )
 
-        return {
+        if valid_until:
 
-            "expires_in": f"{remaining} days",
+            findings.append(
 
-            "expired": remaining < 0,
-        }
+                Finding(
+
+                    category="TLS",
+
+                    entity="Certificate",
+
+                    name="valid_until",
+
+                    value=valid_until,
+
+                )
+
+            )
+
+        return findings

@@ -1,33 +1,33 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class ProtocolAnalyzer(BaseIntelligence):
+class ProtocolAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        version = normalized.get(
-            "tls_version",
-            "",
+        protocol = normalized_data.get(
+            "protocol",
         )
 
-        modern = version in (
-            "TLSv1.3",
-            "TLSv1.2",
-        )
+        if not protocol:
 
-        return {
+            return []
 
-            "protocol_category": (
+        return [
 
-                "Modern"
+            Finding(
 
-                if modern
+                category="TLS",
 
-                else "Legacy"
+                entity="Protocol",
 
-            ),
+                name="tls_version",
 
-        }
+                value=protocol,
+
+            )
+
+        ]

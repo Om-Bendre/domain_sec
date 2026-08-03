@@ -1,46 +1,51 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class IssuerAnalyzer(BaseIntelligence):
-
-    TRUSTED = [
-
-        "Google",
-
-        "DigiCert",
-
-        "Let's Encrypt",
-
-        "GlobalSign",
-
-        "Sectigo",
-
-        "Cloudflare",
-
-    ]
+class IssuerAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        organization = (
-            normalized.get(
-                "issuer_organization"
-            )
-            or ""
-        )
+        findings = []
 
-        trusted = any(
+        fields = {
 
-            ca.lower() in organization.lower()
+            "issuer_common_name":
+                "issuer_common_name",
 
-            for ca in self.TRUSTED
+            "issuer_organization":
+                "issuer_organization",
 
-        )
-
-        return {
-
-            "trusted_ca": trusted,
+            "issuer_country":
+                "issuer_country",
 
         }
+
+        for field, name in fields.items():
+
+            value = normalized_data.get(
+                field,
+            )
+
+            if value is None:
+                continue
+
+            findings.append(
+
+                Finding(
+
+                    category="TLS",
+
+                    entity="Issuer",
+
+                    name=name,
+
+                    value=value,
+
+                )
+
+            )
+
+        return findings

@@ -22,7 +22,6 @@ from intelligence.tls.cipher import CipherAnalyzer
 from intelligence.tls.certificate import CertificateAnalyzer
 from intelligence.tls.expiry import ExpiryAnalyzer
 from intelligence.tls.issuer import IssuerAnalyzer
-from intelligence.tls.key_analyzer import KeyAnalyzer
 
 class TLSScanner(BaseScanner):
 
@@ -44,8 +43,6 @@ class TLSScanner(BaseScanner):
             ExpiryAnalyzer(),
 
             IssuerAnalyzer(),
-
-            KeyAnalyzer(),
         ]
 
     def scan(
@@ -72,20 +69,24 @@ class TLSScanner(BaseScanner):
                 request.target,
             )
 
-            normalized = self.normalizer.normalize(
+            normalized_data = self.normalizer.normalize(
                 raw_data,
             )
 
-            for module in self.intelligence_modules:
+            findings = []
 
-                normalized.update(
-                    module.analyze(
-                        normalized,
+            for analyzer in self.analyzers:
+
+                findings.extend(
+
+                    analyzer.analyze(
+                        normalized_data,
                     )
+
                 )
 
             findings = self.mapper.map(
-                normalized,
+                findings,
             )
 
             context.duration_ms = (

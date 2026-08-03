@@ -1,27 +1,72 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class CertificateAnalyzer(BaseIntelligence):
+class CertificateAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        subject = normalized.get(
-            "subject_common_name",
-        )
+        findings = []
 
-        issuer = normalized.get(
-            "issuer_common_name",
-        )
+        fields = {
 
-        return {
+            "subject_common_name":
+                "subject_common_name",
 
-            "self_signed": subject == issuer,
+            "serial_number":
+                "serial_number",
 
-            "wildcard_certificate":
+            "certificate_version":
+                "certificate_version",
 
-                subject.startswith("*."),
+            "san_count":
+                "san_count",
+
+            "primary_san":
+                "primary_san",
+
+            "subject_alt_names":
+                "subject_alt_names",
+
+            "public_key_algorithm":
+                "public_key_algorithm",
+
+            "public_key_size":
+                "public_key_size",
+
+            "signature_algorithm":
+                "signature_algorithm",
+
+            "certificate_fingerprint":
+                "certificate_fingerprint",
 
         }
+
+        for field, name in fields.items():
+
+            value = normalized_data.get(
+                field,
+            )
+
+            if value is None:
+                continue
+
+            findings.append(
+
+                Finding(
+
+                    category="TLS",
+
+                    entity="Certificate",
+
+                    name=name,
+
+                    value=value,
+
+                )
+
+            )
+
+        return findings

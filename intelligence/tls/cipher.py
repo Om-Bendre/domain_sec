@@ -1,71 +1,57 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class CipherAnalyzer(BaseIntelligence):
+class CipherAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        cipher = normalized.get(
+        findings = []
+
+        cipher = normalized_data.get(
             "cipher_suite",
-            "",
         )
 
-        bits = normalized.get(
+        bits = normalized_data.get(
             "cipher_bits",
-            0,
         )
 
-        if "AES_256" in cipher:
+        if cipher:
 
-            encryption = "AES-256"
+            findings.append(
 
-        elif "AES_128" in cipher:
+                Finding(
 
-            encryption = "AES-128"
+                    category="TLS",
 
-        else:
+                    entity="Cipher",
 
-            encryption = "Unknown"
+                    name="cipher_suite",
 
-        if "GCM" in cipher:
+                    value=cipher,
 
-            mode = "GCM"
+                )
 
-        elif "CBC" in cipher:
+            )
 
-            mode = "CBC"
+        if bits:
 
-        else:
+            findings.append(
 
-            mode = "Unknown"
+                Finding(
 
-        if "SHA384" in cipher:
+                    category="TLS",
 
-            hash_algorithm = "SHA384"
+                    entity="Cipher",
 
-        elif "SHA256" in cipher:
+                    name="cipher_bits",
 
-            hash_algorithm = "SHA256"
+                    value=bits,
 
-        else:
+                )
 
-            hash_algorithm = "Unknown"
+            )
 
-        return {
-
-            "cipher_strength": (
-                "Strong"
-                if bits >= 256
-                else "Weak"
-            ),
-
-            "encryption": encryption,
-
-            "cipher_mode": mode,
-
-            "hash_algorithm": hash_algorithm,
-
-        }
+        return findings
