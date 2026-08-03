@@ -1,46 +1,33 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class ServerAnalyzer(BaseIntelligence):
-
-    KNOWN_SERVERS = {
-
-        "nginx": "NGINX",
-
-        "apache": "Apache",
-
-        "iis": "Microsoft IIS",
-
-        "caddy": "Caddy",
-
-        "gws": "Google Web Server",
-
-        "cloudflare": "Cloudflare",
-
-    }
+class ServerAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        server = (
-            normalized.get("server")
-            or ""
-        ).lower()
+        server = normalized_data.get(
+            "server",
+        )
 
-        detected = "Unknown"
+        if not server:
 
-        for key, value in self.KNOWN_SERVERS.items():
+            return []
 
-            if key in server:
+        return [
 
-                detected = value
+            Finding(
 
-                break
+                category="HTTP",
 
-        return {
+                entity="Server",
 
-            "server_software": detected,
+                name="server",
 
-        }
+                value=server,
+
+            )
+
+        ]

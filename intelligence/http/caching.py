@@ -1,45 +1,33 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class CacheAnalyzer(BaseIntelligence):
+class CacheAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        cache = normalized.get(
-            "cache_control"
+        cache = normalized_data.get(
+            "cache_control",
         )
 
-        if cache is None:
+        if not cache:
 
-            policy = "Unknown"
+            return []
 
-        elif "no-store" in cache.lower():
+        return [
 
-            policy = "No Store"
+            Finding(
 
-        elif "no-cache" in cache.lower():
+                category="HTTP",
 
-            policy = "No Cache"
+                entity="Caching",
 
-        elif "private" in cache.lower():
+                name="cache_control",
 
-            policy = "Private"
+                value=cache,
 
-        elif "public" in cache.lower():
+            )
 
-            policy = "Public"
-
-        else:
-
-            policy = "Custom"
-
-        return {
-
-            "cache_enabled": cache is not None,
-
-            "cache_policy": policy,
-
-        }
+        ]

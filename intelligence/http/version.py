@@ -1,37 +1,33 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class HTTPVersionAnalyzer(BaseIntelligence):
+class HTTPVersionAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        version = normalized.get(
-            "http_version"
+        version = normalized_data.get(
+            "http_version",
         )
 
-        modern = version in (
+        if not version:
 
-            "HTTP/2",
+            return []
 
-            "HTTP/3",
+        return [
 
-        )
+            Finding(
 
-        return {
+                category="HTTP",
 
-            "modern_http": modern,
+                entity="Protocol",
 
-            "http_generation": (
+                name="http_version",
 
-                "Modern"
+                value=version,
 
-                if modern
+            )
 
-                else "Legacy"
-
-            ),
-
-        }
+        ]

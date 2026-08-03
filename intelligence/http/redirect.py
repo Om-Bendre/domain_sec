@@ -1,37 +1,52 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class RedirectAnalyzer(BaseIntelligence):
+class RedirectAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        count = normalized.get(
-            "redirect_count",
-            0,
-        )
+        findings = []
 
-        chain = normalized.get(
+        chain = normalized_data.get(
             "redirect_chain",
             [],
         )
 
-        return {
+        findings.append(
 
-            "redirects_present": count > 0,
+            Finding(
 
-            "redirect_type": (
-                "Redirected"
-                if count > 0
-                else "Direct"
-            ),
+                category="HTTP",
 
-            "final_destination": (
-                chain[-1]
-                if chain
-                else normalized.get("final_url")
-            ),
+                entity="Redirect",
 
-        }
+                name="redirect_count",
+
+                value=len(chain),
+
+            )
+
+        )
+
+        for url in chain:
+
+            findings.append(
+
+                Finding(
+
+                    category="HTTP",
+
+                    entity="Redirect",
+
+                    name="redirect",
+
+                    value=url,
+
+                )
+
+            )
+
+        return findings

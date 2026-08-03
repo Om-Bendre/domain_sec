@@ -1,50 +1,60 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class ContentAnalyzer(BaseIntelligence):
+class ContentAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        content_type = (
-            normalized.get("content_type")
-            or ""
-        ).lower()
+        findings = []
 
-        detected = "Unknown"
+        content_type = normalized_data.get(
+            "content_type",
+        )
 
-        if "text/html" in content_type:
+        if content_type:
 
-            detected = "HTML"
+            findings.append(
 
-        elif "application/json" in content_type:
+                Finding(
 
-            detected = "JSON"
+                    category="HTTP",
 
-        elif "application/xml" in content_type:
+                    entity="Content",
 
-            detected = "XML"
+                    name="content_type",
 
-        elif "text/plain" in content_type:
+                    value=content_type,
 
-            detected = "Plain Text"
+                )
 
-        elif "javascript" in content_type:
+            )
 
-            detected = "JavaScript"
+        content_length = normalized_data.get(
+            "headers",
+            {},
+        ).get(
+            "Content-Length",
+        )
 
-        elif "image/" in content_type:
+        if content_length:
 
-            detected = "Image"
+            findings.append(
 
-        elif "pdf" in content_type:
+                Finding(
 
-            detected = "PDF"
+                    category="HTTP",
 
-        return {
+                    entity="Content",
 
-            "content_category": detected,
+                    name="content_length",
 
-        }
+                    value=content_length,
+
+                )
+
+            )
+
+        return findings

@@ -1,27 +1,33 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
 
-class CompressionAnalyzer(BaseIntelligence):
+class CompressionAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        encoding = normalized.get(
-            "content_encoding"
+        encoding = normalized_data.get(
+            "content_encoding",
         )
 
-        return {
+        if not encoding:
 
-            "compression_enabled":
+            return []
 
-                encoding is not None,
+        return [
 
-            "compression_algorithm":
+            Finding(
 
-                encoding
-                if encoding
-                else "None",
+                category="HTTP",
 
-        }
+                entity="Compression",
+
+                name="content_encoding",
+
+                value=encoding,
+
+            )
+
+        ]
