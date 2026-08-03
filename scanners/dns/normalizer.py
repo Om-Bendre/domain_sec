@@ -1,25 +1,73 @@
 class DNSNormalizer:
 
-    def normalize(self, raw_data):
-
-        if raw_data["type"] == "dnssec":
-
-            return {
-                "type": "dnssec",
-                "enabled": raw_data["enabled"],
-                "dnskeys": raw_data["dnskeys"],
-            }
-
-        normalized = []
-
-        for record in raw_data["results"]:
-
-            normalized.append({
-                "record": str(record),
-                "ttl": raw_data["ttl"],
-            })
+    def normalize(
+        self,
+        raw_data: dict,
+    ) -> dict:
 
         return {
-            "type": "records",
-            "records": normalized,
+
+            "records": {
+
+                "A": raw_data.get("A", []),
+
+                "AAAA": raw_data.get("AAAA", []),
+
+                "MX": raw_data.get("MX", []),
+
+                "NS": raw_data.get("NS", []),
+
+                "TXT": raw_data.get("TXT", []),
+
+                "CAA": raw_data.get("CAA", []),
+
+                "CNAME": raw_data.get("CNAME", []),
+
+                "PTR": raw_data.get("PTR", []),
+
+            },
+
+            "dnssec": {
+
+                "enabled": raw_data.get(
+                    "dnssec_enabled",
+                    False,
+                ),
+
+                "dnskeys": raw_data.get(
+                    "dnskeys",
+                    [],
+                ),
+
+                "ds": raw_data.get(
+                    "ds_records",
+                    [],
+                ),
+
+            },
+
+            "mail": {
+
+                "mx": raw_data.get(
+                    "MX",
+                    [],
+                ),
+
+                "txt": raw_data.get(
+                    "TXT",
+                    [],
+                ),
+
+            },
+
+            "nameservers": raw_data.get(
+                "NS",
+                [],
+            ),
+
+            "ptr": raw_data.get(
+                "PTR",
+                [],
+            ),
+
         }

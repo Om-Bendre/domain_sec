@@ -1,155 +1,172 @@
 from time import perf_counter
 
-import dns.resolver
-
-from core.contracts.scanner import BaseScanner
-from core.models.configuration import Configuration
-from core.models.scan_context import ScanContext
-from core.models.scan_result import ScanResult
-from core.models.scan_error import ScanError
-from core.enums.dns import DNSRecordType
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
 from core.enums.scan import TargetType
-from core.models.requests.dns_request import DNSRequest
-from core.models.requests.scan_request import ScanRequest
+
+from core.models.scan_context import ScanContext
+from core.models.scan_error import ScanError
+from core.models.scan_result import ScanResult
+
 from scanners.dns.client import DNSClient
 from scanners.dns.normalizer import DNSNormalizer
 from scanners.dns.mapper import DNSMapper
 
+from intelligence.dns.records import RecordsAnalyzer
+from intelligence.dns.dnssec import DNSSECAnalyzer
+from intelligence.dns.ptr import PTRAnalyzer
+from intelligence.dns.mail import MailAnalyzer
+from intelligence.dns.nameserver import NameServerAnalyzer
 
-class DNSScanner(BaseScanner):
+
+class DNSScanner:
+
+    VERSION = "2.0.0"
 
     def __init__(self):
+
         self.client = DNSClient()
+
         self.normalizer = DNSNormalizer()
+
         self.mapper = DNSMapper()
+
+        self.analyzers = [
+
+            RecordsAnalyzer(),
+
+            DNSSECAnalyzer(),
+
+            PTRAnalyzer(),
+
+            MailAnalyzer(),
+
+            NameServerAnalyzer(),
+
+        ]
 
     def scan(
         self,
-        request: DNSRequest,
-        configuration: Configuration,
+        request,
+        configuration,
     ) -> ScanResult:
 
         start = perf_counter()
 
         context = ScanContext(
+
             target=request.target,
-            target_type=(
-                TargetType.IP
-                if request.record_type == DNSRecordType.PTR
-                else TargetType.DOMAIN
-            ),
-            scanner_name="dns",
-            scanner_version="1.0.0",
+
+            target_type=TargetType.DOMAIN,
+
+            scanner_name="DNS Scanner",
+
+            scanner_version=self.VERSION,
+
             scan_type=ScanType.PASSIVE,
+
             duration_ms=0,
+
             configuration=configuration.model_dump(),
+
         )
 
-        record_type = request.record_type.value
-
         try:
-           if request.check_dnssec:
 
-            raw_data = self.client.check_dnssec(
+            #
+            # Collect all DNS data
+            #
+
+            raw_data = self.client.query(
+
                 request.target,
-                configuration.resolver,
+
+                configuration,
+
             )
 
-           elif request.record_type == DNSRecordType.PTR:
-            raw_data = self.client.query_reverse(
-                request.target,
-                configuration.resolver,
-            )
-           else:
-            raw_data = self.client.query_forward(
-                request.target,
-                request.record_type.value,
-                configuration.resolver,
+            #
+            # Normalize
+            #
+
+            normalized_data = self.normalizer.normalize(
+
+                raw_data,
+
             )
 
-           normalized = self.normalizer.normalize(raw_data)
+            #
+            # Run Intelligence
+            #
 
-           findings = self.mapper.map(
-               normalized,
-               record_type,
-           )
+            findings = []
 
-           context.duration_ms = (perf_counter() - start) * 1000
+            for analyzer in self.analyzers:
 
-           return ScanResult(
-                scanner="dns",
+                findings.extend(
+
+                    analyzer.analyze(
+
+                        normalized_data,
+
+                    )
+
+                )
+
+            #
+            # Final Mapping
+            #
+
+            findings = self.mapper.map(
+
+                findings,
+
+            )
+
+            context.duration_ms = (
+
+                perf_counter() - start
+
+            ) * 1000
+
+            return ScanResult(
+
+                scanner="DNS Scanner",
+
                 status=ScanStatus.SUCCESS,
+
                 context=context,
+
                 findings=findings,
-                errors=[],
-           )
 
-        except dns.resolver.NoAnswer:
+                raw_data=raw_data,
 
-            context.duration_ms = (perf_counter() - start) * 1000
-
-            return ScanResult(
-                scanner="dns",
-                status=ScanStatus.FAILED,
-                context=context,
-                findings=[],
-                errors=[
-                    ScanError(
-                        error_type="NoAnswer",
-                        message=f"No {record_type} record found for {request.target}",
-                    )
-                ],
             )
 
-        except dns.resolver.NXDOMAIN:
+        except Exception as exc:
 
-            context.duration_ms = (perf_counter() - start) * 1000
+            context.duration_ms = (
 
-            return ScanResult(
-                scanner="dns",
-                status=ScanStatus.FAILED,
-                context=context,
-                findings=[],
-                errors=[
-                    ScanError(
-                        error_type="NXDOMAIN",
-                        message=f"Domain '{request.target}' does not exist.",
-                    )
-                ],
-            )
+                perf_counter() - start
 
-        except dns.resolver.Timeout:
-
-            context.duration_ms = (perf_counter() - start) * 1000
+            ) * 1000
 
             return ScanResult(
-                scanner="dns",
+
+                scanner="DNS Scanner",
+
                 status=ScanStatus.FAILED,
+
                 context=context,
-                findings=[],
+
                 errors=[
+
                     ScanError(
-                        error_type="Timeout",
-                        message="DNS query timed out.",
+
+                        message=str(exc),
+
                     )
+
                 ],
-            )
 
-        except Exception as e:
-
-            context.duration_ms = (perf_counter() - start) * 1000
-
-            return ScanResult(
-                scanner="dns",
-                status=ScanStatus.FAILED,
-                context=context,
-                findings=[],
-                errors=[
-                    ScanError(
-                        error_type=type(e).__name__,
-                        message=str(e),
-                    )
-                ],
             )
