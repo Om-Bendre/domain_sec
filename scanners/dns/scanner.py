@@ -73,10 +73,6 @@ class DNSScanner:
 
         try:
 
-            #
-            # Collect all DNS data
-            #
-
             raw_data = self.client.query(
 
                 request.target,
@@ -85,19 +81,11 @@ class DNSScanner:
 
             )
 
-            #
-            # Normalize
-            #
-
             normalized_data = self.normalizer.normalize(
 
                 raw_data,
 
             )
-
-            #
-            # Run Intelligence
-            #
 
             findings = []
 
@@ -113,9 +101,6 @@ class DNSScanner:
 
                 )
 
-            #
-            # Final Mapping
-            #
 
             findings = self.mapper.map(
 

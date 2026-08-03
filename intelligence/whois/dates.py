@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from core.models.finding import Finding
 
@@ -83,14 +83,28 @@ class DatesAnalyzer:
             datetime,
         ):
 
+            if created.tzinfo is not None:
+
+                created = created.astimezone(
+                    timezone.utc,
+                )
+
+                now = datetime.now(
+                    timezone.utc,
+                )
+
+            else:
+
+                now = datetime.now()
+
             age = (
 
-                datetime.utcnow() -
+                now -
 
                 created
 
             ).days
-
+            
             findings.append(
 
                 Finding(

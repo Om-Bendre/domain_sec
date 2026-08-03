@@ -148,6 +148,7 @@ class WHOISScanner:
 
                     ScanError(
 
+                        error_type=type(exc).__name__,
                         message=str(exc),
 
                     )
