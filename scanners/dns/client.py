@@ -3,73 +3,177 @@ import dns.reversename
 
 
 class DNSClient:
-    """
-    Responsible only for communicating with DNS servers.
-    """
 
-    def query_forward(
+    def query(
         self,
         domain: str,
-        record_type: str,
-        dns_server: str,
-    ):
+        configuration,
+    ) -> dict:
 
         resolver = dns.resolver.Resolver()
-        resolver.nameservers = [dns_server]
 
-        answer = resolver.resolve(domain, record_type)
+        resolver.nameservers = [
 
-        return {
-            "type": "records",
-            "results": answer,
-            "ttl": answer.rrset.ttl,
-        }
+            configuration.resolver,
 
-    def query_reverse(
-        self,
-        ip_address: str,
-        dns_server: str,
-    ):
+        ]
 
-        resolver = dns.resolver.Resolver()
-        resolver.nameservers = [dns_server]
+        record_types = [
 
-        reverse_name = dns.reversename.from_address(ip_address)
+            "A",
 
-        answer = resolver.resolve(reverse_name, "PTR")
+            "AAAA",
 
-        return {
-            "type": "records",
-            "results": answer,
-            "ttl": answer.rrset.ttl if answer.rrset else None,
-        }
+            "MX",
 
-    def check_dnssec(
-        self,
-        domain: str,
-        dns_server: str,
-    ):
+            "NS",
 
-        resolver = dns.resolver.Resolver()
-        resolver.nameservers = [dns_server]
+            "TXT",
+
+            "CAA",
+
+            "CNAME",
+
+        ]
+
+        raw = {}
+
+        #
+        # DNS Records
+        #
+
+        for record_type in record_types:
+
+            try:
+
+                answer = resolver.resolve(
+
+                    domain,
+
+                    record_type,
+
+                )
+
+                raw[record_type] = [
+
+                    str(record)
+
+                    for record
+
+                    in answer
+
+                ]
+
+            except Exception:
+
+                raw[record_type] = []
+
+        #
+        # DNSSEC
+        #
 
         try:
 
-            answer = resolver.resolve(domain, "DNSKEY")
+            dnskeys = resolver.resolve(
 
-            return {
-                "type": "dnssec",
-                "enabled": True,
-                "dnskeys": answer,
-            }
+                domain,
 
-        except dns.resolver.NoAnswer:
+                "DNSKEY",
 
-            return {
-                "type": "dnssec",
-                "enabled": False,
-                "dnskeys": None,
-            }
+            )
 
-        except dns.resolver.NXDOMAIN:
-            raise
+            raw["dnssec_enabled"] = True
+
+            raw["dnskeys"] = [
+
+                str(key)
+
+                for key
+
+                in dnskeys
+
+            ]
+
+        except Exception:
+
+            raw["dnssec_enabled"] = False
+
+            raw["dnskeys"] = []
+
+        #
+        # DS Records
+        #
+
+        try:
+
+            ds = resolver.resolve(
+
+                domain,
+
+                "DS",
+
+            )
+
+            raw["ds_records"] = [
+
+                str(record)
+
+                for record
+
+                in ds
+
+            ]
+
+        except Exception:
+
+            raw["ds_records"] = []
+
+        #
+        # PTR
+        #
+
+        raw["PTR"] = []
+
+        for ip in raw.get(
+
+            "A",
+
+            [],
+
+        ):
+
+            try:
+
+                reverse = dns.reversename.from_address(
+
+                    ip,
+
+                )
+
+                answer = resolver.resolve(
+
+                    reverse,
+
+                    "PTR",
+
+                )
+
+                raw["PTR"].extend(
+
+                    [
+
+                        str(record)
+
+                        for record
+
+                        in answer
+
+                    ]
+
+                )
+
+            except Exception:
+
+                pass
+
+        return raw
