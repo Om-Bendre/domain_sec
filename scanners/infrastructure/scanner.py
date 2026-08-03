@@ -16,12 +16,12 @@ from core.models.requests.infrastructure_request import InfrastructureRequest
 from scanners.infrastructure.client import InfrastructureClient
 from scanners.infrastructure.normalizer import InfrastructureNormalizer
 from scanners.infrastructure.mapper import InfrastructureMapper
-from intelligence.infrastructure.provider import ProviderDetector
+
 
 from intelligence.infrastructure.asn import ASNAnalyzer
 from intelligence.infrastructure.ptr import PTRAnalyzer
 from intelligence.infrastructure.geo import GeoAnalyzer
-from intelligence.infrastructure.provider import ProviderDetector
+from intelligence.infrastructure.provider import ProviderAnalyzer
 
 class InfrastructureScanner(BaseScanner):
 
@@ -38,7 +38,7 @@ class InfrastructureScanner(BaseScanner):
 
             GeoAnalyzer(),
 
-            ProviderDetector(),
+            ProviderAnalyzer(),
 
         ]
 
@@ -66,22 +66,26 @@ class InfrastructureScanner(BaseScanner):
                 request.target,
             )
 
-            normalized = self.normalizer.normalize(
+            normalized_data = self.normalizer.normalize(
                 raw_data,
             )
 
-            for module in self.intelligence_modules:
+            findings = []
 
-                normalized.update(
+            for analyzer in self.analyzers:
 
-                    module.analyze(
-                        normalized,
+                findings.extend(
+
+                    analyzer.analyze(
+
+                        normalized_data,
+
                     )
 
                 )
 
             findings = self.mapper.map(
-                normalized,
+                findings,
             )
 
             context.duration_ms = (

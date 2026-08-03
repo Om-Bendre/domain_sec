@@ -2,82 +2,115 @@ class InfrastructureNormalizer:
 
     def normalize(
         self,
-        raw_data,
-    ):
+        raw_data: dict,
+    ) -> dict:
 
         asn = raw_data["asn"]
+
         geo = raw_data["geo"]
 
-        network = asn.get("network")
+        network = asn.get(
+            "network",
+        )
 
         return {
 
-            "ip": raw_data["ip"],
+            "ip": {
 
-            "ip_version": raw_data["ip_version"],
+                "address": raw_data["ip"],
 
-            "ptr": raw_data["ptr"],
+                "version": raw_data["ip_version"],
 
-            "asn": asn.get("asn"),
+                "ptr": raw_data["ptr"],
 
-            "asn_registry": asn.get("asn_registry"),
+            },
 
-            "asn_country": asn.get("asn_country_code"),
+            "asn": {
 
-            "asn_description": asn.get("asn_description"),
+                "number": asn.get("asn"),
 
-            "network_name": (
-                network.get("name")
-                if network
-                else None
-            ),
+                "registry": asn.get("asn_registry"),
 
-            "network_handle": (
-                network.get("handle")
-                if network
-                else None
-            ),
+                "country": asn.get("asn_country_code"),
 
-            "cidr": (
-                network.get("cidr")
-                if network
-                else None
-            ),
+                "description": asn.get("asn_description"),
 
-            "network_type": (
-                network.get("type")
-                if network
-                else None
-            ),
+            },
 
-            "start_address": (
-                network.get("start_address")
-                if network
-                else None
-            ),
+            "network": {
 
-            "end_address": (
-                network.get("end_address")
-                if network
-                else None
-            ),
+                "name":
 
-            "country": geo.country.name,
+                    network.get("name")
 
-            "country_code": geo.country.iso_code,
+                    if network
 
-            "region": geo.subdivisions.most_specific.name,
+                    else None,
 
-            "city": geo.city.name,
+                "handle":
 
-            "postal_code": geo.postal.code,
+                    network.get("handle")
 
-            "latitude": geo.location.latitude,
+                    if network
 
-            "longitude": geo.location.longitude,
+                    else None,
 
-            "time_zone": geo.location.time_zone,
+                "cidr":
 
-            "accuracy_radius": geo.location.accuracy_radius,
+                    network.get("cidr")
+
+                    if network
+
+                    else None,
+
+                "type":
+
+                    network.get("type")
+
+                    if network
+
+                    else None,
+
+                "start_address":
+
+                    network.get("start_address")
+
+                    if network
+
+                    else None,
+
+                "end_address":
+
+                    network.get("end_address")
+
+                    if network
+
+                    else None,
+
+            },
+
+            "geo": {
+
+                "country": geo.country.name,
+
+                "country_code": geo.country.iso_code,
+
+                "region": geo.subdivisions.most_specific.name,
+
+                "city": geo.city.name,
+
+                "postal_code": geo.postal.code,
+
+                "latitude": geo.location.latitude,
+
+                "longitude": geo.location.longitude,
+
+                "timezone": geo.location.time_zone,
+
+                "accuracy_radius":
+
+                    geo.location.accuracy_radius,
+
+            },
 
         }

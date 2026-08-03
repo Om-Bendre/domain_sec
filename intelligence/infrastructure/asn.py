@@ -1,28 +1,52 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
-class ASNAnalyzer(BaseIntelligence):
+
+class ASNAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        return {
+        findings = []
 
-            "organization": normalized.get(
-                "asn_description"
-            ),
+        asn = normalized_data.get(
+            "asn",
+            {},
+        )
 
-            "registry": normalized.get(
-                "asn_registry"
-            ),
+        mapping = {
 
-            "country": normalized.get(
-                "asn_country"
-            ),
+            "number": "asn",
 
-            "public_asn": normalized.get(
-                "asn"
-            ) is not None,
+            "registry": "registry",
+
+            "country": "country",
+
+            "description": "description",
 
         }
+
+        for field, name in mapping.items():
+
+            value = asn.get(field)
+
+            if value:
+
+                findings.append(
+
+                    Finding(
+
+                        category="Infrastructure",
+
+                        entity="ASN",
+
+                        name=name,
+
+                        value=value,
+
+                    )
+
+                )
+
+        return findings

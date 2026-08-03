@@ -1,38 +1,40 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
-class GeoAnalyzer(BaseIntelligence):
+
+class GeoAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        return {
+        findings = []
 
-            "location":
+        geo = normalized_data.get(
+            "geo",
+            {},
+        )
 
-                ", ".join(
+        for field, value in geo.items():
 
-                    filter(
+            if value is None:
 
-                        None,
+                continue
 
-                        [
+            findings.append(
 
-                            normalized.get("city"),
+                Finding(
 
-                            normalized.get("region"),
+                    category="Infrastructure",
 
-                            normalized.get("country"),
+                    entity="Geo",
 
-                        ],
+                    name=field,
 
-                    )
+                    value=value,
 
-                ),
+                )
 
-            "coordinates":
+            )
 
-                f"{normalized.get('latitude')}, {normalized.get('longitude')}",
-
-        }
+        return findings

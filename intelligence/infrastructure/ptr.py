@@ -1,28 +1,36 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
-class PTRAnalyzer(BaseIntelligence):
+
+class PTRAnalyzer:
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        ptr = normalized.get("ptr")
+        ptr = normalized_data.get(
+            "ip",
+            {},
+        ).get(
+            "ptr",
+        )
 
         if not ptr:
 
-            return {
+            return []
 
-                "reverse_dns": None,
+        return [
 
-                "ptr_available": False,
+            Finding(
 
-            }
+                category="Infrastructure",
 
-        return {
+                entity="PTR",
 
-            "reverse_dns": ptr,
+                name="hostname",
 
-            "ptr_available": True,
+                value=ptr,
 
-        }
+            )
+
+        ]

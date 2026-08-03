@@ -1,104 +1,58 @@
-from core.contracts.intelligence import BaseIntelligence
+from core.models.finding import Finding
 
-class ProviderDetector(BaseIntelligence):
+
+class ProviderAnalyzer:
 
     PROVIDERS = {
 
-        "15169": {
-            "provider": "Google LLC",
-            "infrastructure": "Cloud Provider",
-            "hosting": "Google Cloud",
-        },
+        "amazon": "AWS",
 
-        "16509": {
-            "provider": "Amazon",
-            "infrastructure": "Cloud Provider",
-            "hosting": "AWS",
-        },
+        "aws": "AWS",
 
-        "8075": {
-            "provider": "Microsoft",
-            "infrastructure": "Cloud Provider",
-            "hosting": "Azure",
-        },
+        "google": "Google Cloud",
 
-        "13335": {
-            "provider": "Cloudflare",
-            "infrastructure": "CDN / Security",
-            "hosting": "Cloudflare",
-        },
+        "cloudflare": "Cloudflare",
 
-        "20940": {
-            "provider": "Akamai",
-            "infrastructure": "CDN",
-            "hosting": "Akamai",
-        },
+        "azure": "Microsoft Azure",
 
-        "14061": {
-            "provider": "DigitalOcean",
-            "infrastructure": "Cloud Provider",
-            "hosting": "DigitalOcean",
-        },
+        "digitalocean": "DigitalOcean",
 
-        "24940": {
-            "provider": "Hetzner",
-            "infrastructure": "Cloud Provider",
-            "hosting": "Hetzner",
-        },
+        "linode": "Linode",
 
-        "16276": {
-            "provider": "OVHcloud",
-            "infrastructure": "Cloud Provider",
-            "hosting": "OVHcloud",
-        },
-
-        "31898": {
-            "provider": "Oracle",
-            "infrastructure": "Cloud Provider",
-            "hosting": "Oracle Cloud",
-        },
-
-        "63949": {
-            "provider": "Linode",
-            "infrastructure": "Cloud Provider",
-            "hosting": "Linode",
-        },
+        "ovh": "OVH",
 
     }
 
     def analyze(
         self,
-        normalized,
-    ):
+        normalized_data: dict,
+    ) -> list[Finding]:
 
-        asn = str(
-            normalized.get("asn")
+        network = normalized_data.get(
+            "network",
+            {},
         )
 
-        if asn in self.PROVIDERS:
+        searchable = str(network).lower()
 
-            provider = self.PROVIDERS[asn]
+        for keyword, provider in self.PROVIDERS.items():
 
-            return {
+            if keyword in searchable:
 
-                "provider": provider["provider"],
+                return [
 
-                "hosting_provider": provider["hosting"],
+                    Finding(
 
-                "infrastructure_type": provider["infrastructure"],
+                        category="Infrastructure",
 
-                "confidence": "High",
+                        entity="Cloud",
 
-            }
+                        name="provider",
 
-        return {
+                        value=provider,
 
-            "provider": "Unknown",
+                    )
 
-            "hosting_provider": "Unknown",
+                ]
 
-            "infrastructure_type": "Unknown",
-
-            "confidence": "Low",
-
-        }
+        return []
