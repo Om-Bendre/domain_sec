@@ -48,4 +48,6 @@ class HTTPClient:
 
             ],
 
+            "body": response.text,
+
         }

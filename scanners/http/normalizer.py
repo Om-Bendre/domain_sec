@@ -21,38 +21,33 @@ class HTTPNormalizer:
 
         return {
 
-            "final_url": raw_data["url"],
+            "url":
 
-            "status_code": raw_data["status_code"],
+                raw_data["url"],
 
-            "reason": raw_data["reason"],
+            "status_code":
 
-            "http_version": version_map.get(
+                raw_data["status_code"],
 
-                raw_data["http_version"],
+            "reason":
 
-                str(raw_data["http_version"])
+                raw_data["reason"],
 
-            ),
+            "http_version":
+
+                version_map.get(...),
 
             "response_time_ms":
 
-                round(
-
-                    raw_data["response_time_ms"],
-
-
-                    2,
-
-                ),
-
-            "redirect_count":
-
-                len(raw_data["history"]),
+                round(...),
 
             "redirect_chain":
 
                 raw_data["history"],
+
+            "headers":
+
+                headers,
 
             "server":
 
@@ -66,10 +61,6 @@ class HTTPNormalizer:
 
                 headers.get("Content-Encoding"),
 
-            "content_length":
-
-                raw_data["content_length"],
-
             "cache_control":
 
                 headers.get("Cache-Control"),
@@ -81,9 +72,5 @@ class HTTPNormalizer:
             "allow":
 
                 headers.get("Allow"),
-
-            "headers":
-
-                headers,
 
         }

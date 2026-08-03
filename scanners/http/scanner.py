@@ -74,22 +74,24 @@ class HTTPScanner(BaseScanner):
                 request.target,
             )
 
-            normalized = self.normalizer.normalize(
+            normalized_data = self.normalizer.normalize(
                 raw_data,
             )
 
-            for module in self.intelligence_modules:
+            findings = []
 
-                normalized.update(
+            for analyzer in self.intelligence_modules:
 
-                    module.analyze(
-                        normalized,
+                findings.extend(
+
+                    analyzer.analyze(
+                        normalized_data,
                     )
 
                 )
 
             findings = self.mapper.map(
-                normalized,
+                findings,
             )
 
             context.duration_ms = (
