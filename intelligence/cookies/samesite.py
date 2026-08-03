@@ -1,38 +1,29 @@
+from core.models.finding import Finding
+
+
 class SameSiteAnalyzer:
 
     def analyze(
         self,
         cookie: dict,
-    ) -> dict:
+    ) -> list[Finding]:
 
-        value = cookie["attributes"].get(
-            "samesite"
-        )
+        return [
 
-        if value:
+            Finding(
 
-            value = value.capitalize()
+                category="Cookies",
 
-        if value == "Strict":
+                entity=cookie["name"],
 
-            strength = "Strong"
+                name="samesite",
 
-        elif value == "Lax":
+                value=cookie["attributes"].get(
 
-            strength = "Good"
+                    "samesite",
 
-        elif value == "None":
+                ),
 
-            strength = "Weak"
+            )
 
-        else:
-
-            strength = "Weak"
-
-        return {
-
-            "samesite": value,
-
-            "samesite_strength": strength,
-
-        }
+        ]

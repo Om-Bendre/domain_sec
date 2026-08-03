@@ -1,36 +1,51 @@
+from core.models.finding import Finding
+
+
 class PrefixAnalyzer:
 
     def analyze(
         self,
         cookie: dict,
-    ) -> dict:
+    ) -> list[Finding]:
+
+        findings = []
 
         name = cookie["name"]
 
         if name.startswith("__Host-"):
 
-            return {
+            findings.append(
 
-                "prefix": "__Host-",
+                Finding(
 
-                "prefix_strength": "Very Strong",
+                    category="Cookies",
 
-            }
+                    entity=name,
 
-        if name.startswith("__Secure-"):
+                    name="prefix",
 
-            return {
+                    value="__Host-",
 
-                "prefix": "__Secure-",
+                )
 
-                "prefix_strength": "Strong",
+            )
 
-            }
+        elif name.startswith("__Secure-"):
 
-        return {
+            findings.append(
 
-            "prefix": "None",
+                Finding(
 
-            "prefix_strength": "Normal",
+                    category="Cookies",
 
-        }
+                    entity=name,
+
+                    name="prefix",
+
+                    value="__Secure-",
+
+                )
+
+            )
+
+        return findings

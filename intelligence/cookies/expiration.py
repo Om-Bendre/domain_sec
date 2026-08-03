@@ -1,32 +1,51 @@
+from core.models.finding import Finding
+
+
 class ExpirationAnalyzer:
 
     def analyze(
         self,
         cookie: dict,
-    ) -> dict:
+    ) -> list[Finding]:
 
-        attrs = cookie["attributes"]
+        findings = []
 
-        persistent = (
+        attributes = cookie["attributes"]
 
-            "expires" in attrs
+        if "expires" in attributes:
 
-            or
+            findings.append(
 
-            "max-age" in attrs
+                Finding(
 
-        )
+                    category="Cookies",
 
-        return {
+                    entity=cookie["name"],
 
-            "persistent": persistent,
+                    name="expires",
 
-            "expiration_type":
+                    value=attributes["expires"],
 
-                "Persistent"
+                )
 
-                if persistent
+            )
 
-                else "Session",
+        if "max-age" in attributes:
 
-        }
+            findings.append(
+
+                Finding(
+
+                    category="Cookies",
+
+                    entity=cookie["name"],
+
+                    name="max_age",
+
+                    value=attributes["max-age"],
+
+                )
+
+            )
+
+        return findings

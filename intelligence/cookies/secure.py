@@ -1,25 +1,25 @@
+from core.models.finding import Finding
+
+
 class SecureAnalyzer:
 
     def analyze(
         self,
         cookie: dict,
-    ) -> dict:
+    ) -> list[Finding]:
 
-        secure = cookie["attributes"].get(
-            "secure",
-            False,
-        )
+        return [
 
-        return {
+            Finding(
 
-            "secure": secure,
+                category="Cookies",
 
-            "secure_strength":
+                entity=cookie["name"],
 
-                "Strong"
+                name="secure",
 
-                if secure
+                value="secure" in cookie["attributes"],
 
-                else "Weak",
+            )
 
-        }
+        ]

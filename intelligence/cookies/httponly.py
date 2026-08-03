@@ -1,25 +1,25 @@
+from core.models.finding import Finding
+
+
 class HttpOnlyAnalyzer:
 
     def analyze(
         self,
         cookie: dict,
-    ) -> dict:
+    ) -> list[Finding]:
 
-        httponly = cookie["attributes"].get(
-            "httponly",
-            False,
-        )
+        return [
 
-        return {
+            Finding(
 
-            "httponly": httponly,
+                category="Cookies",
 
-            "httponly_strength":
+                entity=cookie["name"],
 
-                "Strong"
+                name="httponly",
 
-                if httponly
+                value="httponly" in cookie["attributes"],
 
-                else "Weak",
+            )
 
-        }
+        ]

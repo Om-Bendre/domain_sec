@@ -95,24 +95,22 @@ class CookieScanner:
 
             for cookie in cookies:
 
-                analyzed_cookie = cookie.copy()
+                findings = []
 
-                for analyzer in self.analyzers:
+                for cookie in cookies:
 
-                    analyzed_cookie.update(
+                    for analyzer in self.analyzers:
 
-                        analyzer.analyze(
-                            analyzed_cookie,
+                        findings.extend(
+
+                            analyzer.analyze(
+                                cookie,
+                            )
+
                         )
 
-                    )
-
-                findings.extend(
-
-                    self.mapper.map(
-                        analyzed_cookie,
-                    )
-
+                findings = self.mapper.map(
+                    findings,
                 )
 
             context.duration_ms = (
