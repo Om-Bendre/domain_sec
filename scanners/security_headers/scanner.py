@@ -25,27 +25,27 @@ from scanners.security_headers.mapper import (
     SecurityHeadersMapper,
 )
 
-from intelligence.security_headers.hsts_analyzer import (
+from intelligence.security_headers.hsts import (
     HSTSAnalyzer,
 )
 
-from intelligence.security_headers.csp_analyzer import (
+from intelligence.security_headers.csp import (
     CSPAnalyzer,
 )
 
-from intelligence.security_headers.xfo_analyzer import (
+from intelligence.security_headers.xfo import (
     XFrameOptionsAnalyzer,
 )
 
-from intelligence.security_headers.xcto_analyzer import (
+from intelligence.security_headers.xcto import (
     XContentTypeOptionsAnalyzer,
 )
 
-from intelligence.security_headers.referrer_analyzer import (
+from intelligence.security_headers.referrer import (
     ReferrerPolicyAnalyzer,
 )
 
-from intelligence.security_headers.permissions_analyzer import (
+from intelligence.security_headers.permissions import (
     PermissionsPolicyAnalyzer,
 )
 
@@ -93,20 +93,24 @@ class SecurityHeadersScanner(BaseScanner):
                 request.target,
             )
 
-            normalized = self.normalizer.normalize(
+            normalized_data = self.normalizer.normalize(
                 raw_data,
             )
 
-            for module in self.intelligence_modules:
+            findings = []
 
-                normalized.update(
-                    module.analyze(
-                        normalized,
+            for analyzer in self.analyzers:
+
+                findings.extend(
+
+                    analyzer.analyze(
+                        normalized_data,
                     )
+
                 )
 
             findings = self.mapper.map(
-                normalized,
+                findings,
             )
 
             context.duration_ms = (
