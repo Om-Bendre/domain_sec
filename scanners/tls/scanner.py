@@ -33,7 +33,7 @@ class TLSScanner(BaseScanner):
 
         self.mapper = TLSMapper()
 
-        self.intelligence_modules = [
+        self.analyzers = [
             ProtocolAnalyzer(),
 
             CipherAnalyzer(),

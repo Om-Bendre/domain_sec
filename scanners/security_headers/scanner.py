@@ -60,7 +60,7 @@ class SecurityHeadersScanner(BaseScanner):
 
         self.mapper = SecurityHeadersMapper()
 
-        self.intelligence_modules = [
+        self.analyzers = [
             HSTSAnalyzer(),
             CSPAnalyzer(),
             XFrameOptionsAnalyzer(),
