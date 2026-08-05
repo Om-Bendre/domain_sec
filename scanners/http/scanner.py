@@ -1,7 +1,5 @@
 from time import perf_counter
 
-from core.contracts.scanner import BaseScanner
-
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
 from core.enums.scan import TargetType
@@ -25,7 +23,7 @@ from intelligence.http.contents import ContentAnalyzer
 from intelligence.http.version import HTTPVersionAnalyzer
 
 
-class HTTPScanner(BaseScanner):
+class HTTPScanner:
 
     def __init__(self):
 

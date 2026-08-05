@@ -1,7 +1,5 @@
 from time import perf_counter
 
-from core.contracts.scanner import BaseScanner
-
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
 from core.enums.scan import TargetType
@@ -23,14 +21,14 @@ from intelligence.infrastructure.ptr import PTRAnalyzer
 from intelligence.infrastructure.geo import GeoAnalyzer
 from intelligence.infrastructure.provider import ProviderAnalyzer
 
-class InfrastructureScanner(BaseScanner):
+class InfrastructureScanner:
 
     def __init__(self):
 
         self.client = InfrastructureClient()
         self.normalizer = InfrastructureNormalizer()
         self.mapper = InfrastructureMapper()
-        self.intelligence_modules = [
+        self.analyzers = [
 
             ASNAnalyzer(),
 
@@ -110,7 +108,6 @@ class InfrastructureScanner(BaseScanner):
                 scanner="infrastructure",
                 status=ScanStatus.FAILED,
                 context=context,
-                findings=[],
                 errors=[
                     ScanError(
                         error_type=type(e).__name__,

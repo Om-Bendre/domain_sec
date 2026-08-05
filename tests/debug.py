@@ -1,16 +1,16 @@
 from core.models.configuration import Configuration
 
 # Change these two imports
-from core.models.requests.dns_request import DNSRequest
-from scanners.dns.scanner import DNSScanner
+from core.models.requests.http_request import HTTPRequest
+from scanners.http.scanner import HTTPScanner
 
 
 configuration = Configuration()
 
-scanner = DNSScanner()
+scanner = HTTPScanner()
 
-request = DNSRequest(
-    target="google.com",
+request = HTTPRequest(
+    target="https://google.com",
 )
 
 result = scanner.scan(
@@ -20,6 +20,8 @@ result = scanner.scan(
 
 print("\nStatus")
 print(result.status)
+
+
 
 print("\nErrors")
 
