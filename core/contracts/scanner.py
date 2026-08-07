@@ -1,19 +1,19 @@
-from abc import ABC, abstractmethod
-
-from core.models.scan_result import ScanResult
-from core.models.configuration import Configuration
-from core.models.requests.scan_request import ScanRequest
+from abc import ABC
+from abc import abstractmethod
 
 
 class BaseScanner(ABC):
-    """
-    Base class for every SecureCheck scanner.
-    """
+
+    NAME = ""
+
+    REQUEST_MODEL = None
+
+    VERSION = "1.0.0"
 
     @abstractmethod
     def scan(
         self,
-        request: ScanRequest,
-        configuration: Configuration
-    ) -> ScanResult:
+        request,
+        configuration,
+    ):
         pass
