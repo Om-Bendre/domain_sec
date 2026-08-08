@@ -60,22 +60,52 @@ class PermissionsPolicyAnalyzer:
 
         )
 
-        for directive in directives:
+        findings.append(
 
-            findings.append(
+            Finding(
 
-                Finding(
+                category="Security Headers",
 
-                    category="Security Headers",
+                entity="Permissions-Policy",
 
-                    entity="Permissions-Policy",
+                name="uses_wildcard",
 
-                    name="directive",
-
-                    value=directive,
-
-                )
+                value="*" in policy,
 
             )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="Permissions-Policy",
+
+                name="uses_self",
+
+                value="'self'" in policy,
+
+            )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="Permissions-Policy",
+
+                name="uses_none",
+
+                value="()" in policy,
+
+            )
+
+        )
 
         return findings

@@ -14,6 +14,10 @@ class HSTSAnalyzer:
             "hsts",
         )
 
+        #
+        # HSTS Missing
+        #
+
         if not hsts:
 
             findings.append(
@@ -34,6 +38,10 @@ class HSTSAnalyzer:
 
             return findings
 
+        #
+        # HSTS Present
+        #
+
         findings.append(
 
             Finding(
@@ -50,58 +58,102 @@ class HSTSAnalyzer:
 
         )
 
+        #
+        # Parse directives
+        #
+
+        max_age = None
+
+        include_subdomains = False
+
+        preload = False
+
         directives = [
 
             directive.strip()
 
             for directive in hsts.split(";")
 
+            if directive.strip()
+
         ]
 
         for directive in directives:
 
-            if "=" in directive:
+            lower = directive.lower()
 
-                key, value = directive.split(
+            if lower.startswith("max-age="):
 
-                    "=",
+                try:
 
-                    1,
+                    max_age = int(
 
-                )
-
-                findings.append(
-
-                    Finding(
-
-                        category="Security Headers",
-
-                        entity="HSTS",
-
-                        name=key.lower(),
-
-                        value=value,
+                        directive.split("=")[1]
 
                     )
 
-                )
+                except ValueError:
 
-            else:
+                    pass
 
-                findings.append(
+            elif lower == "includesubdomains":
 
-                    Finding(
+                include_subdomains = True
 
-                        category="Security Headers",
+            elif lower == "preload":
 
-                        entity="HSTS",
+                preload = True
 
-                        name=directive.lower(),
+        #
+        # Findings
+        #
 
-                        value=True,
+        findings.append(
 
-                    )
+            Finding(
 
-                )
+                category="Security Headers",
+
+                entity="HSTS",
+
+                name="max_age",
+
+                value=max_age,
+
+            )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="HSTS",
+
+                name="include_subdomains",
+
+                value=include_subdomains,
+
+            )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="HSTS",
+
+                name="preload",
+
+                value=preload,
+
+            )
+
+        )
 
         return findings

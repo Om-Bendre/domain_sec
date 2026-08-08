@@ -10,11 +10,17 @@ class CSPAnalyzer:
 
         findings = []
 
-        csp = normalized_data.get(
-            "csp",
+        csp = normalized_data.get("csp")
+
+        report_only = normalized_data.get(
+            "csp_report_only",
         )
 
-        if not csp:
+        #
+        # Missing CSP
+        #
+
+        if not csp and not report_only:
 
             findings.append(
 
@@ -33,6 +39,18 @@ class CSPAnalyzer:
             )
 
             return findings
+
+        #
+        # Determine policy & mode
+        #
+
+        policy = csp or report_only
+
+        mode = (
+            "Enforced"
+            if csp
+            else "Report-Only"
+        )
 
         findings.append(
 
@@ -60,19 +78,21 @@ class CSPAnalyzer:
 
                 name="mode",
 
-                value=normalized_data.get(
-                    "csp_mode",
-                ),
+                value=mode,
 
             )
 
         )
 
+        #
+        # Parse directives
+        #
+
         directives = [
 
             item.strip()
 
-            for item in csp.split(";")
+            for item in policy.split(";")
 
             if item.strip()
 
@@ -94,22 +114,124 @@ class CSPAnalyzer:
 
         )
 
-        for directive in directives:
+        #
+        # Security properties
+        #
 
-            findings.append(
+        findings.append(
 
-                Finding(
+            Finding(
 
-                    category="Security Headers",
+                category="Security Headers",
 
-                    entity="CSP",
+                entity="CSP",
 
-                    name="directive",
+                name="has_default_src",
 
-                    value=directive,
+                value=any(
 
-                )
+                    d.startswith("default-src")
+
+                    for d in directives
+
+                ),
 
             )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="CSP",
+
+                name="unsafe_inline",
+
+                value="'unsafe-inline'" in policy,
+
+            )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="CSP",
+
+                name="unsafe_eval",
+
+                value="'unsafe-eval'" in policy,
+
+            )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="CSP",
+
+                name="wildcard_sources",
+
+                value="*" in policy,
+
+            )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="CSP",
+
+                name="frame_ancestors",
+
+                value=any(
+
+                    d.startswith("frame-ancestors")
+
+                    for d in directives
+
+                ),
+
+            )
+
+        )
+
+        findings.append(
+
+            Finding(
+
+                category="Security Headers",
+
+                entity="CSP",
+
+                name="upgrade_insecure_requests",
+
+                value=any(
+
+                    d.startswith(
+                        "upgrade-insecure-requests"
+                    )
+
+                    for d in directives
+
+                ),
+
+            )
+
+        )
 
         return findings
