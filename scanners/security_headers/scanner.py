@@ -52,6 +52,12 @@ from intelligence.security_headers.permissions import (
 
 class SecurityHeadersScanner(BaseScanner):
 
+    NAME = "security_headers"
+
+    REQUEST_MODEL = SecurityHeadersRequest
+
+    VERSION = "1.0.0"
+
     def __init__(self):
 
         self.client = HTTPClient()
@@ -75,11 +81,13 @@ class SecurityHeadersScanner(BaseScanner):
         configuration: Configuration,
     ) -> ScanResult:
 
+        target_type = request.target.target_type
+
         start = perf_counter()
 
         context = ScanContext(
-            target=request.target,
-            target_type=TargetType.DOMAIN,
+            target=request.target.original,
+            target_type= target_type,
             scanner_name="security_headers",
             scanner_version="1.0.0",
             scan_type=ScanType.PASSIVE,
@@ -90,7 +98,7 @@ class SecurityHeadersScanner(BaseScanner):
         try:
 
             raw_data = self.client.query(
-                request.target,
+                request.target.url,
             )
 
             normalized_data = self.normalizer.normalize(
@@ -122,7 +130,7 @@ class SecurityHeadersScanner(BaseScanner):
                 status=ScanStatus.SUCCESS,
                 context=context,
                 findings=findings,
-                raw_data=raw_data,
+                raw_data= {},
                 errors=[],
             )
 

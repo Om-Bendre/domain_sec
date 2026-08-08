@@ -21,7 +21,7 @@ class SecurityHeadersNormalizer:
         normalized = {}
 
         #
-        # Normal headers
+        # Security headers
         #
 
         for header, key in self.SECURITY_HEADERS.items():
@@ -29,28 +29,15 @@ class SecurityHeadersNormalizer:
             normalized[key] = headers.get(header)
 
         #
-        # CSP (supports both enforced and report-only)
+        # CSP
         #
 
-        if headers.get("Content-Security-Policy"):
+        normalized["csp"] = headers.get(
+            "Content-Security-Policy"
+        )
 
-            normalized["csp"] = headers.get(
-                "Content-Security-Policy"
-            )
-
-            normalized["csp_mode"] = "Enforced"
-
-        elif headers.get("Content-Security-Policy-Report-Only"):
-
-            normalized["csp"] = headers.get(
-                "Content-Security-Policy-Report-Only"
-            )
-
-            normalized["csp_mode"] = "Report-Only"
-
-        else:
-
-            normalized["csp"] = None
-            normalized["csp_mode"] = "Missing"
+        normalized["csp_report_only"] = headers.get(
+            "Content-Security-Policy-Report-Only"
+        )
 
         return normalized
