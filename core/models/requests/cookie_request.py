@@ -1,10 +1,8 @@
-from pydantic import BaseModel
+from core.models.scan_request import ScanRequest
 
-
-class CookieRequest(BaseModel):
+class CookieRequest(ScanRequest):
     """
-    Request model for the Cookie Security Scanner.
+    Request model for the API Security Scanner.
     """
 
-    target: str
-    
+    pass

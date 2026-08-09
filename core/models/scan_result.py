@@ -19,6 +19,6 @@ class ScanResult(BaseModel):
 
     findings: list[Finding] = []
 
-    raw_data: dict[str, Any] = {}
+    raw_data: dict = {}
 
     errors: list[ScanError] = []

@@ -1,9 +1,8 @@
-from pydantic import BaseModel
+from core.models.scan_request import ScanRequest
 
-
-class AuthenticationRequest(BaseModel):
+class AuthenticationRequest(ScanRequest):
     """
-    Request model for Authentication Scanner.
+    Request model for the API Security Scanner.
     """
 
-    target: str
+    pass
