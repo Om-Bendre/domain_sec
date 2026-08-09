@@ -31,22 +31,22 @@ class NameServerAnalyzer:
 
         )
 
-        for ns in nameservers:
+        # for ns in nameservers:
 
-            findings.append(
+        #     findings.append(
 
-                Finding(
+        #         Finding(
 
-                    category="DNS",
+        #             category="DNS",
 
-                    entity="Name Servers",
+        #             entity="Name Servers",
 
-                    name="nameserver",
+        #             name="nameserver",
 
-                    value=ns,
+        #             value=ns,
 
-                )
+        #         )
 
-            )
+        #     )
 
         return findings

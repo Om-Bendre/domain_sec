@@ -1,5 +1,5 @@
 from time import perf_counter
-
+from core.contracts.scanner import BaseScanner
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
 from core.enums.scan import TargetType
@@ -18,12 +18,18 @@ from scanners.http.mapper import HTTPMapper
 from intelligence.http.redirect import RedirectAnalyzer
 from intelligence.http.server import ServerAnalyzer
 from intelligence.http.compression import CompressionAnalyzer
-from intelligence.http.caching import CacheAnalyzer
-from intelligence.http.contents import ContentAnalyzer
+
+
 from intelligence.http.version import HTTPVersionAnalyzer
 
 
-class HTTPScanner:
+class HTTPScanner(BaseScanner):
+
+    NAME = "http"
+
+    REQUEST_MODEL = HTTPRequest
+
+    VERSION = "1.0.0"
 
     def __init__(self):
 
@@ -41,10 +47,6 @@ class HTTPScanner:
 
             CompressionAnalyzer(),
 
-            CacheAnalyzer(),
-
-            ContentAnalyzer(),
-
             HTTPVersionAnalyzer(),
         ]
 
@@ -54,11 +56,13 @@ class HTTPScanner:
         configuration: Configuration,
     ) -> ScanResult:
 
+        target_type = request.target.target_type
+
         start = perf_counter()
 
         context = ScanContext(
-            target=request.target,
-            target_type=TargetType.URL,
+            target=request.target.original,
+            target_type= target_type,
             scanner_name="http",
             scanner_version="1.0.0",
             scan_type=ScanType.PASSIVE,
@@ -69,7 +73,7 @@ class HTTPScanner:
         try:
 
             raw_data = self.client.query(
-                request.target,
+                request.target.url,
             )
 
             normalized_data = self.normalizer.normalize(
@@ -101,10 +105,7 @@ class HTTPScanner:
                 status=ScanStatus.SUCCESS,
                 context=context,
                 findings=findings,
-                raw_data={
-                    "headers": raw_data["headers"],
-                    "redirect_chain": raw_data["history"],
-                },
+                raw_data={},
                 errors=[],
             )
         except Exception as e:

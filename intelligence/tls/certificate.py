@@ -27,9 +27,6 @@ class CertificateAnalyzer:
             "primary_san":
                 "primary_san",
 
-            "subject_alt_names":
-                "subject_alt_names",
-
             "public_key_algorithm":
                 "public_key_algorithm",
 

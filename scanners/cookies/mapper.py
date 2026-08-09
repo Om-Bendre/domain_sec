@@ -8,4 +8,26 @@ class CookieMapper:
         findings: list[Finding],
     ) -> list[Finding]:
 
-        return findings
+        unique_findings = []
+
+        seen = set()
+
+        for finding in findings:
+
+            key = (
+                finding.category,
+                finding.entity,
+                finding.name,
+                finding.value,
+            )
+
+            if key in seen:
+                continue
+
+            seen.add(key)
+
+            unique_findings.append(
+                finding
+            )
+
+        return unique_findings

@@ -1,5 +1,5 @@
 from time import perf_counter
-
+from core.contracts.scanner import BaseScanner
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
 from core.enums.scan import TargetType
@@ -8,6 +8,9 @@ from core.models.scan_context import ScanContext
 from core.models.scan_error import ScanError
 from core.models.scan_result import ScanResult
 
+from core.models.requests.whois_request import WHOISRequest
+from core.models.configuration import Configuration
+
 from scanners.whois.client import WHOISClient
 from scanners.whois.normalizer import WHOISNormalizer
 from scanners.whois.mapper import WHOISMapper
@@ -15,14 +18,18 @@ from scanners.whois.mapper import WHOISMapper
 from intelligence.whois.registrar import RegistrarAnalyzer
 from intelligence.whois.dates import DatesAnalyzer
 from intelligence.whois.privacy import PrivacyAnalyzer
-from intelligence.whois.nameservers import NameServersAnalyzer
+
 from intelligence.whois.status import StatusAnalyzer
-from intelligence.whois.contacts import ContactsAnalyzer
 
 
-class WHOISScanner:
 
-    VERSION = "2.0.0"
+class WHOISScanner(BaseScanner):
+
+    NAME = "whois"
+
+    REQUEST_MODEL = WHOISRequest
+
+    VERSION = "1.0.0"
 
     def __init__(self):
 
@@ -40,27 +47,27 @@ class WHOISScanner:
 
             PrivacyAnalyzer(),
 
-            NameServersAnalyzer(),
-
             StatusAnalyzer(),
 
-            ContactsAnalyzer(),
+            
 
         ]
 
     def scan(
         self,
-        request,
-        configuration,
+        request: WHOISRequest,
+        configuration: Configuration,
     ) -> ScanResult:
+
+        target_type = request.target.target_type
 
         start = perf_counter()
 
         context = ScanContext(
 
-            target=request.target,
+            target=request.target.original,
 
-            target_type=TargetType.DOMAIN,
+            target_type= target_type,
 
             scanner_name="WHOIS Scanner",
 
@@ -78,7 +85,7 @@ class WHOISScanner:
 
             raw_data = self.client.query(
 
-                request.target,
+                request.target.domain,
 
             )
 
@@ -124,7 +131,7 @@ class WHOISScanner:
 
                 findings=findings,
 
-                raw_data=raw_data,
+                raw_data= {},
 
             )
 

@@ -32,7 +32,7 @@ class ServerAnalyzer:
 
                     entity="Server",
 
-                    name="server",
+                    name="detected_server",
 
                     value=server,
 

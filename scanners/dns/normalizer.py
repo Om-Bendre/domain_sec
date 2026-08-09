@@ -15,8 +15,6 @@ class DNSNormalizer:
 
                 "MX": raw_data.get("MX", []),
 
-                "NS": raw_data.get("NS", []),
-
                 "TXT": raw_data.get("TXT", []),
 
                 "CAA": raw_data.get("CAA", []),

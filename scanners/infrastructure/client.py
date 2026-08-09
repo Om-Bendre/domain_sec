@@ -5,17 +5,12 @@ import dns.resolver
 import dns.reversename
 
 import ipwhois
-import geoip2.database
+
 
 
 class InfrastructureClient:
 
-    def __init__(self):
-
-        self.geo_reader = geoip2.database.Reader(
-            "data/GeoLite2-City.mmdb"
-        )
-
+  
     def query(
         self,
         target: str,
@@ -44,8 +39,7 @@ class InfrastructureClient:
             ip
         ).lookup_rdap()
 
-        geo = self.geo_reader.city(ip)
-
+        
         return {
 
             "ip": ip,
@@ -55,7 +49,5 @@ class InfrastructureClient:
             "ptr": ptr,
 
             "asn": asn,
-
-            "geo": geo,
 
         }

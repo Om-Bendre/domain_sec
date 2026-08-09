@@ -55,12 +55,6 @@ class WHOISClient:
                     [],
                 ),
 
-            "name_servers":
-                result.get(
-                    "name_servers",
-                    [],
-                ),
-
             "dnssec":
                 result.get(
                     "dnssec",

@@ -28,30 +28,12 @@ class RecordsAnalyzer:
 
                     entity=record_type,
 
-                    name=f"{record_type.lower()}_records",
+                    name=f"{record_type.lower()}_count",
 
                     value=len(values),
 
                 )
 
             )
-
-            for value in values:
-
-                findings.append(
-
-                    Finding(
-
-                        category="DNS",
-
-                        entity=record_type,
-
-                        name=record_type.lower(),
-
-                        value=value,
-
-                    )
-
-                )
 
         return findings

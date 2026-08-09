@@ -45,9 +45,7 @@ class APICharacteristicsAnalyzer:
 
             )
 
-        #
-        # GraphQL
-        #
+ 
 
         if any(
 

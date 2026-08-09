@@ -42,28 +42,21 @@ class SessionAnalyzer:
 
         for cookie in cookies:
 
-            lower_cookie = cookie.lower()
+            cookie_name = cookie.split(
+                "=",
+                1,
+            )[0].strip().lower()
 
-            for session_name in COMMON_SESSION_COOKIES:
+            if cookie_name in COMMON_SESSION_COOKIES:
 
-                if session_name in lower_cookie:
-
-                    findings.append(
-
-                        Finding(
-
-                            category="Authentication",
-
-                            entity="Session",
-
-                            name="session_cookie",
-
-                            value=session_name,
-
-                            description="Session cookie detected",
-
-                        )
-
+                findings.append(
+                    Finding(
+                        category="Authentication",
+                        entity="Session",
+                        name="session_cookie",
+                        value=cookie_name,
+                        description="Session cookie detected",
                     )
+                )
 
         return findings

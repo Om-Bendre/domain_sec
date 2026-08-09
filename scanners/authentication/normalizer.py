@@ -43,6 +43,8 @@ class AuthenticationNormalizer:
 
             "forms": forms,
 
+            "html": html,
+
         }
 
     def _parse_form(
@@ -127,5 +129,14 @@ class AuthenticationNormalizer:
             "required": inp.has_attr(
                 "required",
             ),
+
+             "minlength": inp.get(
+            "minlength",
+            ),
+
+            "maxlength": inp.get(
+                "maxlength",
+            ),
+
 
         }

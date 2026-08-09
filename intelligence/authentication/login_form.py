@@ -48,22 +48,10 @@ class LoginFormAnalyzer:
 
                     password_field = field
 
-                if (
+                if field_name in LOGIN_FIELD_NAMES:
+                    username_field = field
 
-                    field_type in {
-
-                        "text",
-
-                        "email",
-
-                    }
-
-                    or
-
-                    field_name in LOGIN_FIELD_NAMES
-
-                ):
-
+                elif field_type == "email":
                     username_field = field
 
             if not (

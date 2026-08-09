@@ -17,13 +17,18 @@ from scanners.tls.client import TLSClient
 from scanners.tls.normalizer import TLSNormalizer
 from scanners.tls.mapper import TLSMapper
 
-from intelligence.tls.protocol import ProtocolAnalyzer
 from intelligence.tls.cipher import CipherAnalyzer
 from intelligence.tls.certificate import CertificateAnalyzer
 from intelligence.tls.expiry import ExpiryAnalyzer
 from intelligence.tls.issuer import IssuerAnalyzer
 
 class TLSScanner(BaseScanner):
+
+    NAME = "tls"
+
+    REQUEST_MODEL = TLSRequest
+
+    VERSION = "1.0.0"
 
     def __init__(self):
 
@@ -34,7 +39,6 @@ class TLSScanner(BaseScanner):
         self.mapper = TLSMapper()
 
         self.analyzers = [
-            ProtocolAnalyzer(),
 
             CipherAnalyzer(),
 
@@ -51,11 +55,13 @@ class TLSScanner(BaseScanner):
         configuration: Configuration,
     ) -> ScanResult:
 
+        target_type = request.target.target_type
+
         start = perf_counter()
 
         context = ScanContext(
-            target=request.target,
-            target_type=TargetType.DOMAIN,
+            target=request.target.original,
+            target_type=target_type,
             scanner_name="tls",
             scanner_version="1.0.0",
             scan_type=ScanType.PASSIVE,
@@ -66,7 +72,9 @@ class TLSScanner(BaseScanner):
         try:
 
             raw_data = self.client.query(
-                request.target,
+                request.target.domain
+                if request.target.domain
+                else request.target.ip,
             )
 
             normalized_data = self.normalizer.normalize(
@@ -98,9 +106,7 @@ class TLSScanner(BaseScanner):
                 status=ScanStatus.SUCCESS,
                 context=context,
                 findings=findings,
-                raw_data={
-                    "certificate": raw_data["certificate"],
-                },
+                raw_data={},
                 errors=[],
             )
 

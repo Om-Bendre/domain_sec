@@ -31,22 +31,22 @@ class RedirectAnalyzer:
 
         )
 
-        for url in chain:
+        # for url in chain:
 
-            findings.append(
+        #     findings.append(
 
-                Finding(
+        #         Finding(
 
-                    category="HTTP",
+        #             category="HTTP",
 
-                    entity="Redirect",
+        #             entity="Redirect",
 
-                    name="redirect",
+        #             name="redirect",
 
-                    value=url,
+        #             value=url,
 
-                )
+        #         )
 
-            )
+        #     )
 
         return findings

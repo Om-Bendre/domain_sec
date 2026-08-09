@@ -1,5 +1,7 @@
 from time import perf_counter
-from urllib.parse import urlparse
+
+
+from core.contracts.scanner import BaseScanner
 
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
@@ -8,6 +10,9 @@ from core.enums.scan import TargetType
 from core.models.scan_context import ScanContext
 from core.models.scan_error import ScanError
 from core.models.scan_result import ScanResult
+
+from core.models.requests.authentication_request import AuthenticationRequest
+from core.models.configuration import Configuration
 
 from scanners.authentication.client import AuthenticationClient
 from scanners.authentication.normalizer import AuthenticationNormalizer
@@ -22,7 +27,11 @@ from intelligence.authentication.mfa import MFAAnalyzer
 from intelligence.authentication.password import PasswordAnalyzer
 
 
-class AuthenticationScanner:
+class AuthenticationScanner(BaseScanner):
+
+    NAME = "authentication"
+
+    REQUEST_MODEL = AuthenticationRequest
 
     VERSION = "1.0.0"
 
@@ -54,27 +63,17 @@ class AuthenticationScanner:
 
     def scan(
         self,
-        request,
-        configuration,
+        request: AuthenticationRequest,
+        configuration: Configuration,
     ) -> ScanResult:
 
-        parsed = urlparse(
-            request.target,
-        )
-
-        if parsed.scheme and parsed.netloc:
-
-            target_type = TargetType.URL
-
-        else:
-
-            target_type = TargetType.DOMAIN
+        target_type = request.target.target_type
 
         start = perf_counter()
 
         context = ScanContext(
 
-            target=request.target,
+            target=request.target.original,
 
             target_type=target_type,
 
@@ -94,7 +93,7 @@ class AuthenticationScanner:
 
             raw_data = self.client.query(
 
-                request.target,
+                request.target.url,
 
             )
 
@@ -140,7 +139,7 @@ class AuthenticationScanner:
 
                 findings=findings,
 
-                raw_data=raw_data,
+                raw_data= {},
 
             )
 
@@ -163,6 +162,8 @@ class AuthenticationScanner:
                 errors=[
 
                     ScanError(
+
+                        error_type=type(exc).__name__,
 
                         message=str(exc),
 

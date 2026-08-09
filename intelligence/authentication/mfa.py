@@ -50,11 +50,11 @@ class MFAAnalyzer:
 
                         entity="MFA",
 
-                        name="mfa_method",
+                        name="mfa_indicator",
 
                         value=method,
 
-                        description="Multi-factor authentication indicator detected",
+                        description="MFA-related indicator detected in the response",
 
                     )
 

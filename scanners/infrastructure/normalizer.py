@@ -7,8 +7,6 @@ class InfrastructureNormalizer:
 
         asn = raw_data["asn"]
 
-        geo = raw_data["geo"]
-
         network = asn.get(
             "network",
         )
@@ -86,30 +84,6 @@ class InfrastructureNormalizer:
                     if network
 
                     else None,
-
-            },
-
-            "geo": {
-
-                "country": geo.country.name,
-
-                "country_code": geo.country.iso_code,
-
-                "region": geo.subdivisions.most_specific.name,
-
-                "city": geo.city.name,
-
-                "postal_code": geo.postal.code,
-
-                "latitude": geo.location.latitude,
-
-                "longitude": geo.location.longitude,
-
-                "timezone": geo.location.time_zone,
-
-                "accuracy_radius":
-
-                    geo.location.accuracy_radius,
 
             },
 

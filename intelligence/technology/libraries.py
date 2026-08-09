@@ -81,4 +81,4 @@ class LibrariesAnalyzer:
 
                 )
 
-        return findings
+       

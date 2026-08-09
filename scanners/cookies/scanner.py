@@ -1,11 +1,16 @@
 from time import perf_counter
 
+from core.contracts.scanner import BaseScanner
+
 from core.models.scan_context import ScanContext
 from core.models.scan_result import ScanResult
 from core.models.scan_error import ScanError
+
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
-from core.enums.scan import TargetType
+
+from core.models.requests.cookie_request import CookieRequest
+from core.models.configuration import Configuration
 
 from scanners.http.client import HTTPClient
 
@@ -18,11 +23,12 @@ from intelligence.cookies.samesite import SameSiteAnalyzer
 from intelligence.cookies.expiration import ExpirationAnalyzer
 from intelligence.cookies.prefix import PrefixAnalyzer
 
-from urllib.parse import urlparse
-from core.enums.scan import TargetType
 
+class CookieScanner(BaseScanner):
 
-class CookieScanner:
+    NAME = "cookies"
+
+    REQUEST_MODEL = CookieRequest
 
     VERSION = "1.0.0"
 
@@ -50,22 +56,17 @@ class CookieScanner:
 
     def scan(
         self,
-        request,
-        configuration,
+        request: CookieRequest,
+        configuration: Configuration,
     ) -> ScanResult:
 
-        parsed = urlparse(request.target)
-
-        if parsed.scheme and parsed.netloc:
-            target_type = TargetType.URL
-        else:
-            target_type = TargetType.DOMAIN
+        target_type = request.target.target_type
 
         start = perf_counter()
 
         context = ScanContext(
 
-            target=request.target,
+            target=request.target.original,
 
             target_type=target_type,
 
@@ -84,34 +85,76 @@ class CookieScanner:
         try:
 
             raw_data = self.client.query(
-                request.target,
+                request.target.url,
             )
 
             cookies = self.normalizer.normalize(
                 raw_data,
             )
 
-            findings = []
+            #
+            # Deduplicate cookie instances
+            #
+            # A cookie is identified by:
+            # name + domain + path
+            #
+
+            unique_cookies = []
+
+            seen = set()
 
             for cookie in cookies:
 
-                findings = []
+                attributes = cookie.get(
+                    "attributes",
+                    {},
+                )
 
-                for cookie in cookies:
+                identity = (
 
-                    for analyzer in self.analyzers:
+                    cookie.get("name"),
 
-                        findings.extend(
+                    attributes.get("domain"),
 
-                            analyzer.analyze(
-                                cookie,
-                            )
+                    attributes.get("path"),
 
+                )
+
+                if identity in seen:
+
+                    continue
+
+                seen.add(identity)
+
+                unique_cookies.append(
+                    cookie
+                )
+
+            #
+            # Analyze cookies
+            #
+
+            findings = []
+
+            for cookie in unique_cookies:
+
+                for analyzer in self.analyzers:
+
+                    findings.extend(
+
+                        analyzer.analyze(
+                            cookie,
                         )
 
-                findings = self.mapper.map(
-                    findings,
-                )
+                    )
+
+            #
+            # Map findings
+            #
+
+            findings = self.mapper.map(
+                findings,
+            )
 
             context.duration_ms = (
 
@@ -129,7 +172,9 @@ class CookieScanner:
 
                 findings=findings,
 
-                raw_data=raw_data,
+                raw_data={},
+
+                errors=[],
 
             )
 
@@ -149,9 +194,15 @@ class CookieScanner:
 
                 context=context,
 
+                findings=[],
+
+                raw_data={},
+
                 errors=[
 
                     ScanError(
+
+                        error_type=type(exc).__name__,
 
                         message=str(exc),
 

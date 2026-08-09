@@ -35,8 +35,6 @@ class HTTPClient:
 
             "cookie_headers": cookie_headers,
 
-            "content_length": len(response.content),
-
             "response_time_ms":
                 response.elapsed.total_seconds() * 1000,
 

@@ -47,6 +47,8 @@ class MailAnalyzer:
         # MX
         #
 
+        mx_present = bool(mx_records)
+
         findings.append(
 
             Finding(
@@ -57,13 +59,34 @@ class MailAnalyzer:
 
                 name="mx_present",
 
-                value=bool(mx_records),
+                value=mx_present,
 
             )
 
         )
 
+        #
+        # Mail Provider
+        #
+
+        mail_provider = None
+
         for record in mx_records:
+
+            text = str(record).lower()
+
+            for key, provider in self.PROVIDERS.items():
+
+                if key in text:
+
+                    mail_provider = provider
+
+                    break
+
+            if mail_provider:
+                break
+
+        if mail_provider:
 
             findings.append(
 
@@ -73,112 +96,64 @@ class MailAnalyzer:
 
                     entity="Mail",
 
-                    name="mx_record",
+                    name="mail_provider",
 
-                    value=record,
+                    value=mail_provider,
 
                 )
 
             )
 
-            text = str(record).lower()
-
-            for key, provider in self.PROVIDERS.items():
-
-                if key in text:
-
-                    findings.append(
-
-                        Finding(
-
-                            category="DNS",
-
-                            entity="Mail",
-
-                            name="mail_provider",
-
-                            value=provider,
-
-                        )
-
-                    )
-
-                    break
-
         #
-        # SPF
+        # SPF / DMARC
         #
 
-        for txt in txt_records:
+        spf_present = False
 
-            txt = str(txt)
+        dmarc_present = False
 
-            if txt.lower().startswith("v=spf1"):
+        for record in txt_records:
 
-                findings.append(
+            text = str(record).strip().lower()
 
-                    Finding(
+            if text.startswith("v=spf1"):
 
-                        category="DNS",
+                spf_present = True
 
-                        entity="Mail",
+            elif text.startswith("v=dmarc1"):
 
-                        name="spf_present",
+                dmarc_present = True
 
-                        value=True,
+        findings.append(
 
-                    )
+            Finding(
 
-                )
+                category="DNS",
 
-                findings.append(
+                entity="Mail",
 
-                    Finding(
+                name="spf_present",
 
-                        category="DNS",
+                value=spf_present,
 
-                        entity="Mail",
+            )
 
-                        name="spf_record",
+        )
 
-                        value=txt,
+        findings.append(
 
-                    )
+            Finding(
 
-                )
+                category="DNS",
 
-            if txt.lower().startswith("v=dmarc1"):
+                entity="Mail",
 
-                findings.append(
+                name="dmarc_present",
 
-                    Finding(
+                value=dmarc_present,
 
-                        category="DNS",
+            )
 
-                        entity="Mail",
-
-                        name="dmarc_present",
-
-                        value=True,
-
-                    )
-
-                )
-
-                findings.append(
-
-                    Finding(
-
-                        category="DNS",
-
-                        entity="Mail",
-
-                        name="dmarc_record",
-
-                        value=txt,
-
-                    )
-
-                )
+        )
 
         return findings

@@ -42,22 +42,22 @@ class StatusAnalyzer:
 
         )
 
-        for status in statuses:
+        # for status in statuses:
 
-            findings.append(
+        #     findings.append(
 
-                Finding(
+        #         Finding(
 
-                    category="WHOIS",
+        #             category="WHOIS",
 
-                    entity="Status",
+        #             entity="Status",
 
-                    name="domain_status",
+        #             name="domain_status",
 
-                    value=status,
+        #             value=status,
 
-                )
+        #         )
 
-            )
+        #     )
 
         return findings

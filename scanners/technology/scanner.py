@@ -1,13 +1,16 @@
 from time import perf_counter
-from urllib.parse import urlparse
 
+from core.contracts.scanner import BaseScanner
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
-from core.enums.scan import TargetType
+
 
 from core.models.scan_context import ScanContext
 from core.models.scan_error import ScanError
 from core.models.scan_result import ScanResult
+
+from core.models.requests.technology_request import TechnologyRequest
+from core.models.configuration import Configuration
 
 from scanners.technology.client import TechnologyClient
 from scanners.technology.normalizer import TechnologyNormalizer
@@ -22,10 +25,14 @@ from intelligence.technology.backend import BackendAnalyzer
 from intelligence.technology.hosting import HostingAnalyzer
 from intelligence.technology.cdn import CDNAnalyzer
 from intelligence.technology.analytics import AnalyticsAnalyzer
-from intelligence.technology.libraries import LibrariesAnalyzer
 
 
-class TechnologyScanner:
+
+class TechnologyScanner(BaseScanner):
+
+    NAME = "technology"
+
+    REQUEST_MODEL = TechnologyRequest
 
     VERSION = "1.0.0"
 
@@ -57,35 +64,23 @@ class TechnologyScanner:
 
             AnalyticsAnalyzer(),
 
-            LibrariesAnalyzer(),
+    
 
         ]
 
     def scan(
         self,
-        request,
-        configuration,
+        request: TechnologyRequest,
+        configuration: Configuration,
     ) -> ScanResult:
 
-        parsed = urlparse(
-
-            request.target,
-
-        )
-
-        if parsed.scheme and parsed.netloc:
-
-            target_type = TargetType.URL
-
-        else:
-
-            target_type = TargetType.DOMAIN
+        target_type = request.target.target_type
 
         start = perf_counter()
 
         context = ScanContext(
 
-            target=request.target,
+            target=request.target.original,
 
             target_type=target_type,
 
@@ -105,7 +100,7 @@ class TechnologyScanner:
 
             raw_data = self.client.query(
 
-                request.target,
+                request.target.url,
 
             )
 
@@ -151,7 +146,7 @@ class TechnologyScanner:
 
                 findings=findings,
 
-                raw_data=raw_data,
+                raw_data= {},
 
             )
 
@@ -175,10 +170,11 @@ class TechnologyScanner:
 
                     ScanError(
 
+                        error_type=type(exc).__name__,
+
                         message=str(exc),
 
                     )
-
                 ],
 
             )

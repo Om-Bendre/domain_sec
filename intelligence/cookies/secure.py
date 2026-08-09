@@ -8,6 +8,7 @@ class SecureAnalyzer:
         cookie: dict,
     ) -> list[Finding]:
 
+
         return [
 
             Finding(

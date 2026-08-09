@@ -21,10 +21,6 @@ class ASNAnalyzer:
 
             "registry": "registry",
 
-            "country": "country",
-
-            "description": "description",
-
         }
 
         for field, name in mapping.items():

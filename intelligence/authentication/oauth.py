@@ -48,11 +48,11 @@ class OAuthAnalyzer:
 
                         entity="OAuth",
 
-                        name="oauth_provider",
+                        name="oauth_indicator",
 
                         value=provider,
 
-                        description="OAuth provider detected",
+                        description="OAuth-related provider indicator detected in the response",
 
                     )
 

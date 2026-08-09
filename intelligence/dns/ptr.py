@@ -15,10 +15,6 @@ class PTRAnalyzer:
             [],
         )
 
-        if not ptr:
-
-            return findings
-
         findings.append(
 
             Finding(
@@ -29,28 +25,15 @@ class PTRAnalyzer:
 
                 name="ptr_present",
 
-                value=True,
+                value=bool(ptr),
 
             )
 
         )
 
-        for hostname in ptr:
+        if not ptr:
+            return findings
 
-            findings.append(
-
-                Finding(
-
-                    category="DNS",
-
-                    entity="PTR",
-
-                    name="ptr_hostname",
-
-                    value=hostname,
-
-                )
-
-            )
+        
 
         return findings

@@ -8,15 +8,9 @@ class CookieNormalizer:
         raw_data: dict,
     ) -> list[dict]:
 
-        raw_headers = raw_data.get(
-            "raw_headers"
-        )
-
-        if raw_headers is None:
-            return []
-
-        set_cookies = raw_headers.get_all(
-            "Set-Cookie"
+        set_cookies = raw_data.get(
+            "cookie_headers",
+            [],
         )
 
         if not set_cookies:
@@ -38,17 +32,9 @@ class CookieNormalizer:
     ) -> dict:
 
         parts = [
-
             part.strip()
-
             for part in header.split(";")
-
         ]
-
-        #
-        # First element:
-        # sessionid=abc123
-        #
 
         name, value = parts[0].split(
             "=",
@@ -77,11 +63,7 @@ class CookieNormalizer:
                 ] = True
 
         return {
-
             "name": name,
-
             "value": value,
-
             "attributes": attributes,
-
         }

@@ -77,11 +77,6 @@ class WHOISNormalizer:
                     raw_data.get("status"),
                 ),
 
-            "name_servers":
-                self._list(
-                    raw_data.get("name_servers"),
-                ),
-
             "registrant_country":
                 self._first(
                     raw_data.get("registrant_country"),

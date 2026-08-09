@@ -48,12 +48,6 @@ class TLSNormalizer:
             "issuer_common_name":
                 issuer.get("commonName"),
 
-            "issuer_organization":
-                issuer.get("organizationName"),
-
-            "issuer_country":
-                issuer.get("countryName"),
-
             "valid_from":
                 certificate.get("notBefore"),
 
@@ -72,34 +66,8 @@ class TLSNormalizer:
             "primary_san":
                 sans[0] if sans else None,
 
-            "subject_alt_names":
-                sans,
 
-            "ocsp_urls":
-                list(
-                    certificate.get(
-                        "OCSP",
-                        [],
-                    )
-                ),
-
-            "ca_issuers":
-                list(
-                    certificate.get(
-                        "caIssuers",
-                        [],
-                    )
-                ),
-
-            "crl_distribution_points":
-                list(
-                    certificate.get(
-                        "crlDistributionPoints",
-                        [],
-                    )
-                ),
-
-            # -------- Cryptography Fields --------
+            # Cryptography Fields 
 
             "public_key_algorithm":
                 raw_data.get(

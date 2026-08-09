@@ -1,4 +1,5 @@
 from time import perf_counter
+from core.contracts.scanner import BaseScanner
 
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
@@ -17,11 +18,16 @@ from scanners.infrastructure.mapper import InfrastructureMapper
 
 
 from intelligence.infrastructure.asn import ASNAnalyzer
-from intelligence.infrastructure.ptr import PTRAnalyzer
-from intelligence.infrastructure.geo import GeoAnalyzer
+
 from intelligence.infrastructure.provider import ProviderAnalyzer
 
-class InfrastructureScanner:
+class InfrastructureScanner(BaseScanner):
+
+    NAME = "infrastructure"
+
+    REQUEST_MODEL = InfrastructureRequest
+
+    VERSION = "1.0.0"
 
     def __init__(self):
 
@@ -31,10 +37,6 @@ class InfrastructureScanner:
         self.analyzers = [
 
             ASNAnalyzer(),
-
-            PTRAnalyzer(),
-
-            GeoAnalyzer(),
 
             ProviderAnalyzer(),
 
@@ -46,11 +48,13 @@ class InfrastructureScanner:
         configuration: Configuration,
     ) -> ScanResult:
 
+        target_type = request.target.target_type
+
         start = perf_counter()
 
         context = ScanContext(
-            target=request.target,
-            target_type=TargetType.DOMAIN,
+            target=request.target.original,
+            target_type= target_type,
             scanner_name="infrastructure",
             scanner_version="1.0.0",
             scan_type=ScanType.PASSIVE,
@@ -61,7 +65,9 @@ class InfrastructureScanner:
         try:
 
             raw_data = self.client.query(
-                request.target,
+                request.target.ip
+                if request.target.ip
+                else request.target.domain,
             )
 
             normalized_data = self.normalizer.normalize(
@@ -95,6 +101,7 @@ class InfrastructureScanner:
                 status=ScanStatus.SUCCESS,
                 context=context,
                 findings=findings,
+                raw_data= {},
                 errors=[],
             )
 

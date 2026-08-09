@@ -80,12 +80,7 @@ class PasswordAnalyzer:
 
                 )
 
-                attributes = field.get(
-                    "attributes",
-                    {},
-                )
-
-                if "minlength" in attributes:
+                if field.get("minlength") is not None:
 
                     findings.append(
 
@@ -97,15 +92,12 @@ class PasswordAnalyzer:
 
                             name="minlength",
 
-                            value=attributes[
-                                "minlength"
-                            ],
-
+                            value=field["minlength"],
                         )
 
                     )
 
-                if "maxlength" in attributes:
+                if field.get("maxlength") is not None:
 
                     findings.append(
 
@@ -117,12 +109,10 @@ class PasswordAnalyzer:
 
                             name="maxlength",
 
-                            value=attributes[
-                                "maxlength"
-                            ],
+                            value=field["maxlength"],
 
                         )
-
                     )
-
+                    
         return findings
+    

@@ -1,12 +1,14 @@
 from time import perf_counter
-
+from core.contracts.scanner import BaseScanner
 from core.enums.scan import ScanStatus
 from core.enums.scan import ScanType
 from core.enums.scan import TargetType
-
 from core.models.scan_context import ScanContext
 from core.models.scan_error import ScanError
 from core.models.scan_result import ScanResult
+
+from core.models.requests.dns_request import DNSRequest
+from core.models.configuration import Configuration
 
 from scanners.dns.client import DNSClient
 from scanners.dns.normalizer import DNSNormalizer
@@ -19,9 +21,13 @@ from intelligence.dns.mail import MailAnalyzer
 from intelligence.dns.nameserver import NameServerAnalyzer
 
 
-class DNSScanner:
+class DNSScanner(BaseScanner):
 
-    VERSION = "2.0.0"
+    NAME = "dns"
+
+    REQUEST_MODEL = DNSRequest
+
+    VERSION = "1.0.0"
 
     def __init__(self):
 
@@ -47,17 +53,19 @@ class DNSScanner:
 
     def scan(
         self,
-        request,
-        configuration,
+        request: DNSRequest,
+        configuration: Configuration,
     ) -> ScanResult:
+
+        target_type = request.target.target_type
 
         start = perf_counter()
 
         context = ScanContext(
 
-            target=request.target,
+            target=request.target.original,
 
-            target_type=TargetType.DOMAIN,
+            target_type= target_type,
 
             scanner_name="DNS Scanner",
 
@@ -75,7 +83,7 @@ class DNSScanner:
 
             raw_data = self.client.query(
 
-                request.target,
+                request.target.domain,
 
                 configuration,
 
@@ -124,7 +132,7 @@ class DNSScanner:
 
                 findings=findings,
 
-                raw_data=raw_data,
+                raw_data= {},
 
             )
 
@@ -148,6 +156,8 @@ class DNSScanner:
 
                     ScanError(
 
+                        error_type=type(exc).__name__,
+
                         message=str(exc),
 
                     )
@@ -155,3 +165,5 @@ class DNSScanner:
                 ],
 
             )
+        
+        

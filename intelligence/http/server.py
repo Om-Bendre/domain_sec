@@ -24,7 +24,7 @@ class ServerAnalyzer:
 
                 entity="Server",
 
-                name="server",
+                name="response_server",
 
                 value=server,
 

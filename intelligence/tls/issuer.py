@@ -15,12 +15,6 @@ class IssuerAnalyzer:
             "issuer_common_name":
                 "issuer_common_name",
 
-            "issuer_organization":
-                "issuer_organization",
-
-            "issuer_country":
-                "issuer_country",
-
         }
 
         for field, name in fields.items():
