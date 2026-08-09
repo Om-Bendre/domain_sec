@@ -17,3 +17,5 @@ class TargetType(str, Enum):
     DOMAIN = "domain"
     IP = "ip"
     URL = "url"
+    INVALID = "invalid"
+
