@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class APICharacteristicsAnalyzer:
@@ -6,9 +6,9 @@ class APICharacteristicsAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         body = normalized_data.get(
             "body",
@@ -29,9 +29,9 @@ class APICharacteristicsAnalyzer:
 
         if "application/json" in content_type:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -63,9 +63,9 @@ class APICharacteristicsAnalyzer:
 
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -99,9 +99,9 @@ class APICharacteristicsAnalyzer:
 
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -121,9 +121,9 @@ class APICharacteristicsAnalyzer:
 
         if "application/json" in content_type:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -137,4 +137,4 @@ class APICharacteristicsAnalyzer:
 
             )
 
-        return findings
+        return facts

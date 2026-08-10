@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class RateLimitingAnalyzer:
@@ -6,9 +6,9 @@ class RateLimitingAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         rate = normalized_data.get(
             "rate_limiting",
@@ -17,9 +17,9 @@ class RateLimitingAnalyzer:
 
         if any(rate.values()):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -53,7 +53,7 @@ class RateLimitingAnalyzer:
 
         }
 
-        for key, finding_name in mapping.items():
+        for key, Fact_name in mapping.items():
 
             value = rate.get(
                 key,
@@ -63,15 +63,15 @@ class RateLimitingAnalyzer:
 
                 continue
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
                     entity="Rate Limiting",
 
-                    name=finding_name,
+                    name=Fact_name,
 
                     value=value,
 
@@ -79,4 +79,4 @@ class RateLimitingAnalyzer:
 
             )
 
-        return findings
+        return facts

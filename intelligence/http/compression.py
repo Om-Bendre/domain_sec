@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class CompressionAnalyzer:
@@ -6,7 +6,7 @@ class CompressionAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
         encoding = normalized_data.get(
             "content_encoding",
@@ -18,7 +18,7 @@ class CompressionAnalyzer:
 
         return [
 
-            Finding(
+            Fact(
 
                 category="HTTP",
 

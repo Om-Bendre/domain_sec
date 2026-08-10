@@ -42,7 +42,7 @@ class Orchestrator:
         
         # scan_results = []
 
-        findings = []
+        facts = []
 
         for scanner in self.registry.get_scanners():
 
@@ -68,9 +68,9 @@ class Orchestrator:
 
             # )
 
-            findings.extend(
+            facts.extend(
 
-                result.findings,
+                result.fact,
 
             )
 
@@ -82,6 +82,6 @@ class Orchestrator:
 
             # scan_results=scan_results,
 
-            findings=findings,
+            fact=facts,
 
         )

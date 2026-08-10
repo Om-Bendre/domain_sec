@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from core.models.finding import Finding
+from core.models.fact import Fact
 from core.models.scan_result import ScanResult
 
 
@@ -16,6 +16,6 @@ class CombinedScanResult(BaseModel):
         default_factory=list,
     )
 
-    findings: list[Finding] = Field(
+    fact: list[Fact] = Field(
         default_factory=list,
     )

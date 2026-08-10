@@ -74,11 +74,11 @@ class InfrastructureScanner(BaseScanner):
                 raw_data,
             )
 
-            findings = []
+            facts = []
 
             for analyzer in self.analyzers:
 
-                findings.extend(
+                facts.extend(
 
                     analyzer.analyze(
 
@@ -88,8 +88,10 @@ class InfrastructureScanner(BaseScanner):
 
                 )
 
-            findings = self.mapper.map(
-                findings,
+            facts = self.mapper.map(
+
+                facts,
+
             )
 
             context.duration_ms = (
@@ -100,7 +102,7 @@ class InfrastructureScanner(BaseScanner):
                 scanner="infrastructure",
                 status=ScanStatus.SUCCESS,
                 context=context,
-                findings=findings,
+                fact=facts,
                 raw_data= {},
                 errors=[],
             )

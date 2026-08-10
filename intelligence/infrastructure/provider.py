@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class ProviderAnalyzer:
@@ -26,7 +26,7 @@ class ProviderAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
         network = normalized_data.get(
             "network",
@@ -41,7 +41,7 @@ class ProviderAnalyzer:
 
                 return [
 
-                    Finding(
+                    Fact(
 
                         category="Infrastructure",
 

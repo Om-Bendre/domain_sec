@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class CipherAnalyzer:
@@ -6,9 +6,9 @@ class CipherAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         cipher = normalized_data.get(
             "cipher_suite",
@@ -20,9 +20,9 @@ class CipherAnalyzer:
 
         if cipher:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="TLS",
 
@@ -38,9 +38,9 @@ class CipherAnalyzer:
 
         if bits:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="TLS",
 
@@ -54,4 +54,4 @@ class CipherAnalyzer:
 
             )
 
-        return findings
+        return facts

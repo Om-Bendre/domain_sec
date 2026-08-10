@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 ANALYTICS = {
@@ -29,9 +29,9 @@ class AnalyticsAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         html = normalized_data.get(
 
@@ -59,9 +59,9 @@ class AnalyticsAnalyzer:
 
             if key in searchable:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Technology",
 
@@ -75,4 +75,4 @@ class AnalyticsAnalyzer:
 
                 )
 
-        return findings
+        return facts

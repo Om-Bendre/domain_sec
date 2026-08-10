@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class ExpirationAnalyzer:
@@ -6,17 +6,17 @@ class ExpirationAnalyzer:
     def analyze(
         self,
         cookie: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         attributes = cookie["attributes"]
 
         if "expires" in attributes:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Cookies",
 
@@ -32,9 +32,9 @@ class ExpirationAnalyzer:
 
         if "max-age" in attributes:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Cookies",
 
@@ -48,4 +48,4 @@ class ExpirationAnalyzer:
 
             )
 
-        return findings
+        return facts

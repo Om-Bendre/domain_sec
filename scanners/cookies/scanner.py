@@ -134,13 +134,13 @@ class CookieScanner(BaseScanner):
             # Analyze cookies
             #
 
-            findings = []
+            facts = []
 
             for cookie in unique_cookies:
 
                 for analyzer in self.analyzers:
 
-                    findings.extend(
+                    facts.extend(
 
                         analyzer.analyze(
                             cookie,
@@ -149,11 +149,13 @@ class CookieScanner(BaseScanner):
                     )
 
             #
-            # Map findings
+            # Map Fact
             #
 
-            findings = self.mapper.map(
-                findings,
+            facts = self.mapper.map(
+
+                facts,
+
             )
 
             context.duration_ms = (
@@ -170,7 +172,7 @@ class CookieScanner(BaseScanner):
 
                 context=context,
 
-                findings=findings,
+                fact=facts,
 
                 raw_data={},
 
@@ -193,10 +195,6 @@ class CookieScanner(BaseScanner):
                 status=ScanStatus.FAILED,
 
                 context=context,
-
-                findings=[],
-
-                raw_data={},
 
                 errors=[
 

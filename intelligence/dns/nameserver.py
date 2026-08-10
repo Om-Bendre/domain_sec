@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class NameServerAnalyzer:
@@ -6,18 +6,18 @@ class NameServerAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         nameservers = normalized_data.get(
             "nameservers",
             [],
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="DNS",
 
@@ -33,9 +33,9 @@ class NameServerAnalyzer:
 
         # for ns in nameservers:
 
-        #     findings.append(
+        #     facts.append(
 
-        #         Finding(
+        #         Fact(
 
         #             category="DNS",
 
@@ -49,4 +49,4 @@ class NameServerAnalyzer:
 
         #     )
 
-        return findings
+        return facts

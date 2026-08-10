@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 LOGIN_FIELD_NAMES = {
@@ -18,9 +18,9 @@ class LoginFormAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         forms = normalized_data.get(
             "forms",
@@ -66,9 +66,9 @@ class LoginFormAnalyzer:
 
                 continue
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -82,9 +82,9 @@ class LoginFormAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -96,9 +96,9 @@ class LoginFormAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -110,9 +110,9 @@ class LoginFormAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -124,9 +124,9 @@ class LoginFormAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -138,6 +138,6 @@ class LoginFormAnalyzer:
 
             )
 
-            return findings
+            return facts
 
-        return findings
+        return facts

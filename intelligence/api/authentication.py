@@ -1,6 +1,6 @@
 import re
 
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class AuthenticationAnalyzer:
@@ -28,9 +28,9 @@ class AuthenticationAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         auth = normalized_data.get(
             "authentication",
@@ -57,9 +57,9 @@ class AuthenticationAnalyzer:
 
         if challenge:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -109,9 +109,9 @@ class AuthenticationAnalyzer:
 
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -131,9 +131,9 @@ class AuthenticationAnalyzer:
 
         if challenge:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -165,9 +165,9 @@ class AuthenticationAnalyzer:
 
         ).lower():
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -197,9 +197,9 @@ class AuthenticationAnalyzer:
 
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -241,9 +241,9 @@ class AuthenticationAnalyzer:
 
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -279,9 +279,9 @@ class AuthenticationAnalyzer:
 
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -295,4 +295,4 @@ class AuthenticationAnalyzer:
 
             )
 
-        return findings
+        return facts

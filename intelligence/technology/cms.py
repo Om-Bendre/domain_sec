@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 CMS = {
@@ -21,9 +21,9 @@ class CMSAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         html = normalized_data.get(
 
@@ -51,9 +51,9 @@ class CMSAnalyzer:
 
             if key in searchable:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Technology",
 
@@ -67,4 +67,4 @@ class CMSAnalyzer:
 
                 )
 
-        return findings
+        return facts

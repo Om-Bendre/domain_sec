@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 BACKENDS = {
@@ -39,9 +39,9 @@ class BackendAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         headers = str(
 
@@ -69,9 +69,9 @@ class BackendAnalyzer:
 
             if key in searchable:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Technology",
 
@@ -85,4 +85,4 @@ class BackendAnalyzer:
 
                 )
 
-        return findings
+        return facts

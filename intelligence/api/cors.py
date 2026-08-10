@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class CORSAnalyzer:
@@ -6,9 +6,9 @@ class CORSAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         cors = normalized_data.get(
             "cors",
@@ -37,7 +37,7 @@ class CORSAnalyzer:
 
         }
 
-        for key, finding_name in mapping.items():
+        for key, Fact_name in mapping.items():
 
             value = cors.get(
                 key,
@@ -47,15 +47,15 @@ class CORSAnalyzer:
 
                 continue
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
                     entity="CORS",
 
-                    name=finding_name,
+                    name=Fact_name,
 
                     value=value,
 
@@ -63,4 +63,4 @@ class CORSAnalyzer:
 
             )
 
-        return findings
+        return facts

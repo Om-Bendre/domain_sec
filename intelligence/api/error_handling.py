@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 ERROR_PATTERNS = {
@@ -27,9 +27,9 @@ class ErrorHandlingAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         body = normalized_data.get(
             "body",
@@ -40,9 +40,9 @@ class ErrorHandlingAnalyzer:
 
             if pattern in body:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="API Security",
 
@@ -56,4 +56,4 @@ class ErrorHandlingAnalyzer:
 
                 )
 
-        return findings
+        return facts

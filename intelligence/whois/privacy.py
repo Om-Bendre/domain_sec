@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class PrivacyAnalyzer:
@@ -20,9 +20,9 @@ class PrivacyAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         searchable = str(
             normalized_data,
@@ -38,9 +38,9 @@ class PrivacyAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="WHOIS",
 
@@ -54,4 +54,4 @@ class PrivacyAnalyzer:
 
         )
 
-        return findings
+        return facts

@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class DNSSECAnalyzer:
@@ -6,9 +6,9 @@ class DNSSECAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         dnssec = normalized_data.get(
             "dnssec",
@@ -20,9 +20,9 @@ class DNSSECAnalyzer:
             False,
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="DNS",
 
@@ -40,9 +40,9 @@ class DNSSECAnalyzer:
             "dnskey",
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="DNS",
 
@@ -60,9 +60,9 @@ class DNSSECAnalyzer:
             "ds",
         ):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="DNS",
 
@@ -76,4 +76,4 @@ class DNSSECAnalyzer:
 
             )
 
-        return findings
+        return facts

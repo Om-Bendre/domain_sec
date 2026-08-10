@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 FRONTEND_LIBRARIES = {
@@ -23,9 +23,9 @@ class FrontendAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         css = " ".join(
 
@@ -53,9 +53,9 @@ class FrontendAnalyzer:
 
             if key in searchable:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Technology",
 
@@ -69,4 +69,4 @@ class FrontendAnalyzer:
 
                 )
 
-        return findings
+        return facts

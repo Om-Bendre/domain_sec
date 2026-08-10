@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class MailAnalyzer:
@@ -24,9 +24,9 @@ class MailAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         mail = normalized_data.get(
             "mail",
@@ -49,9 +49,9 @@ class MailAnalyzer:
 
         mx_present = bool(mx_records)
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="DNS",
 
@@ -88,9 +88,9 @@ class MailAnalyzer:
 
         if mail_provider:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="DNS",
 
@@ -124,9 +124,9 @@ class MailAnalyzer:
 
                 dmarc_present = True
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="DNS",
 
@@ -140,9 +140,9 @@ class MailAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="DNS",
 
@@ -156,4 +156,4 @@ class MailAnalyzer:
 
         )
 
-        return findings
+        return facts

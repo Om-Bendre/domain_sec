@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 JAVASCRIPT_FRAMEWORKS = {
@@ -35,9 +35,9 @@ class JavaScriptAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         html = normalized_data.get(
             "html",
@@ -57,9 +57,9 @@ class JavaScriptAnalyzer:
 
             if key in searchable:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Technology",
 
@@ -73,4 +73,4 @@ class JavaScriptAnalyzer:
 
                 )
 
-        return findings
+        return facts

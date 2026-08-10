@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class PasswordAnalyzer:
@@ -6,9 +6,9 @@ class PasswordAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         forms = normalized_data.get(
             "forms",
@@ -26,9 +26,9 @@ class PasswordAnalyzer:
 
                     continue
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Authentication",
 
@@ -44,9 +44,9 @@ class PasswordAnalyzer:
 
                 )
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Authentication",
 
@@ -62,9 +62,9 @@ class PasswordAnalyzer:
 
                 )
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Authentication",
 
@@ -82,9 +82,9 @@ class PasswordAnalyzer:
 
                 if field.get("minlength") is not None:
 
-                    findings.append(
+                    facts.append(
 
-                        Finding(
+                        Fact(
 
                             category="Authentication",
 
@@ -99,9 +99,9 @@ class PasswordAnalyzer:
 
                 if field.get("maxlength") is not None:
 
-                    findings.append(
+                    facts.append(
 
-                        Finding(
+                        Fact(
 
                             category="Authentication",
 
@@ -113,6 +113,6 @@ class PasswordAnalyzer:
 
                         )
                     )
-                    
-        return findings
+
+        return facts
     

@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class HSTSAnalyzer:
@@ -6,9 +6,9 @@ class HSTSAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         hsts = normalized_data.get(
             "hsts",
@@ -20,9 +20,9 @@ class HSTSAnalyzer:
 
         if not hsts:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Security Headers",
 
@@ -36,15 +36,15 @@ class HSTSAnalyzer:
 
             )
 
-            return findings
+            return facts
 
         #
         # HSTS Present
         #
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -105,12 +105,12 @@ class HSTSAnalyzer:
                 preload = True
 
         #
-        # Findings
+        # Fact
         #
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -124,9 +124,9 @@ class HSTSAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -140,9 +140,9 @@ class HSTSAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -156,4 +156,4 @@ class HSTSAnalyzer:
 
         )
 
-        return findings
+        return facts

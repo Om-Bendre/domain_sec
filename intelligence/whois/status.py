@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class StatusAnalyzer:
@@ -6,9 +6,9 @@ class StatusAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         statuses = normalized_data.get(
             "status",
@@ -26,9 +26,9 @@ class StatusAnalyzer:
 
             ]
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="WHOIS",
 
@@ -44,9 +44,9 @@ class StatusAnalyzer:
 
         # for status in statuses:
 
-        #     findings.append(
+        #     facts.append(
 
-        #         Finding(
+        #         Fact(
 
         #             category="WHOIS",
 
@@ -60,4 +60,4 @@ class StatusAnalyzer:
 
         #     )
 
-        return findings
+        return facts

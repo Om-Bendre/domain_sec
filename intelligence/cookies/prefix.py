@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class PrefixAnalyzer:
@@ -6,17 +6,17 @@ class PrefixAnalyzer:
     def analyze(
         self,
         cookie: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         name = cookie["name"]
 
         if name.startswith("__Host-"):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Cookies",
 
@@ -32,9 +32,9 @@ class PrefixAnalyzer:
 
         elif name.startswith("__Secure-"):
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Cookies",
 
@@ -48,4 +48,4 @@ class PrefixAnalyzer:
 
             )
 
-        return findings
+        return facts

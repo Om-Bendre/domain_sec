@@ -1,24 +1,24 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class AuthenticationMapper:
 
     def map(
         self,
-        findings: list[Finding],
-    ) -> list[Finding]:
+        facts: list[Fact],
+    ) -> list[Fact]:
 
-        unique_findings = []
+        unique_facts = []
 
         seen = set()
 
-        for finding in findings:
+        for fact in facts:
 
             key = (
-                finding.category,
-                finding.entity,
-                finding.name,
-                finding.value,
+                fact.category,
+                fact.entity,
+                fact.name,
+                fact.value,
             )
 
             if key in seen:
@@ -26,8 +26,8 @@ class AuthenticationMapper:
 
             seen.add(key)
 
-            unique_findings.append(
-                finding
+            unique_facts.append(
+                fact
             )
 
-        return unique_findings
+        return unique_facts

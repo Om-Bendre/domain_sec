@@ -105,11 +105,11 @@ class SecurityHeadersScanner(BaseScanner):
                 raw_data,
             )
 
-            findings = []
+            facts = []
 
             for analyzer in self.analyzers:
 
-                findings.extend(
+                facts.extend(
 
                     analyzer.analyze(
                         normalized_data,
@@ -117,8 +117,10 @@ class SecurityHeadersScanner(BaseScanner):
 
                 )
 
-            findings = self.mapper.map(
-                findings,
+            facts = self.mapper.map(
+
+                facts,
+
             )
 
             context.duration_ms = (
@@ -129,7 +131,7 @@ class SecurityHeadersScanner(BaseScanner):
                 scanner="security_headers",
                 status=ScanStatus.SUCCESS,
                 context=context,
-                findings=findings,
+                fact=facts,
                 raw_data= {},
                 errors=[],
             )
@@ -144,8 +146,6 @@ class SecurityHeadersScanner(BaseScanner):
                 scanner="security_headers",
                 status=ScanStatus.FAILED,
                 context=context,
-                findings=[],
-                raw_data={},
                 errors=[
                     ScanError(
                         error_type=type(e).__name__,

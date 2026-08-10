@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 FRAMEWORKS = {
@@ -31,9 +31,9 @@ class FrameworkAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         html = normalized_data.get(
 
@@ -73,9 +73,9 @@ class FrameworkAnalyzer:
 
             if key in searchable:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Technology",
 
@@ -89,4 +89,4 @@ class FrameworkAnalyzer:
 
                 )
 
-        return findings
+        return facts

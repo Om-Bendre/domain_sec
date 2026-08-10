@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class RedirectAnalyzer:
@@ -6,18 +6,18 @@ class RedirectAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         chain = normalized_data.get(
             "redirect_chain",
             [],
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="HTTP",
 
@@ -33,9 +33,9 @@ class RedirectAnalyzer:
 
         # for url in chain:
 
-        #     findings.append(
+        #     facts.append(
 
-        #         Finding(
+        #         Fact(
 
         #             category="HTTP",
 
@@ -49,4 +49,4 @@ class RedirectAnalyzer:
 
         #     )
 
-        return findings
+        return facts

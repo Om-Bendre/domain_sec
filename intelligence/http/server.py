@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class ServerAnalyzer:
@@ -6,7 +6,7 @@ class ServerAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
         server = normalized_data.get(
             "server",
@@ -18,7 +18,7 @@ class ServerAnalyzer:
 
         return [
 
-            Finding(
+            Fact(
 
                 category="HTTP",
 

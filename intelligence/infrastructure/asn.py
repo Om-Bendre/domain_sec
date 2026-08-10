@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class ASNAnalyzer:
@@ -6,9 +6,9 @@ class ASNAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         asn = normalized_data.get(
             "asn",
@@ -29,9 +29,9 @@ class ASNAnalyzer:
 
             if value:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Infrastructure",
 
@@ -45,4 +45,4 @@ class ASNAnalyzer:
 
                 )
 
-        return findings
+        return facts

@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class IssuerAnalyzer:
@@ -6,9 +6,9 @@ class IssuerAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         fields = {
 
@@ -26,9 +26,9 @@ class IssuerAnalyzer:
             if value is None:
                 continue
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="TLS",
 
@@ -42,4 +42,4 @@ class IssuerAnalyzer:
 
             )
 
-        return findings
+        return facts

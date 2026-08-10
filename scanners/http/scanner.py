@@ -80,11 +80,11 @@ class HTTPScanner(BaseScanner):
                 raw_data,
             )
 
-            findings = []
+            facts = []
 
             for analyzer in self.intelligence_modules:
 
-                findings.extend(
+                facts.extend(
 
                     analyzer.analyze(
                         normalized_data,
@@ -92,8 +92,10 @@ class HTTPScanner(BaseScanner):
 
                 )
 
-            findings = self.mapper.map(
-                findings,
+            facts = self.mapper.map(
+
+                facts,
+
             )
 
             context.duration_ms = (
@@ -104,7 +106,7 @@ class HTTPScanner(BaseScanner):
                 scanner="http",
                 status=ScanStatus.SUCCESS,
                 context=context,
-                findings=findings,
+                fact=facts,
                 raw_data={},
                 errors=[],
             )
@@ -118,7 +120,6 @@ class HTTPScanner(BaseScanner):
                 scanner="http",
                 status=ScanStatus.FAILED,
                 context=context,
-                findings=[],
                 errors=[
                     ScanError(
                         error_type=type(e).__name__,

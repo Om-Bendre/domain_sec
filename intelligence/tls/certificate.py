@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class CertificateAnalyzer:
@@ -6,9 +6,9 @@ class CertificateAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         fields = {
 
@@ -50,9 +50,9 @@ class CertificateAnalyzer:
             if value is None:
                 continue
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="TLS",
 
@@ -66,4 +66,4 @@ class CertificateAnalyzer:
 
             )
 
-        return findings
+        return facts

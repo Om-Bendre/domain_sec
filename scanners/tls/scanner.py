@@ -81,11 +81,11 @@ class TLSScanner(BaseScanner):
                 raw_data,
             )
 
-            findings = []
+            facts = []
 
             for analyzer in self.analyzers:
 
-                findings.extend(
+                facts.extend(
 
                     analyzer.analyze(
                         normalized_data,
@@ -93,8 +93,10 @@ class TLSScanner(BaseScanner):
 
                 )
 
-            findings = self.mapper.map(
-                findings,
+            facts = self.mapper.map(
+
+                facts,
+
             )
 
             context.duration_ms = (
@@ -105,7 +107,7 @@ class TLSScanner(BaseScanner):
                 scanner="tls",
                 status=ScanStatus.SUCCESS,
                 context=context,
-                findings=findings,
+                fact=facts,
                 raw_data={},
                 errors=[],
             )
@@ -120,8 +122,6 @@ class TLSScanner(BaseScanner):
                 scanner="tls",
                 status=ScanStatus.FAILED,
                 context=context,
-                findings=[],
-                raw_data={},
                 errors=[
                     ScanError(
                         error_type=type(e).__name__,

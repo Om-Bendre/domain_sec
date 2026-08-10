@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class HttpOnlyAnalyzer:
@@ -6,11 +6,11 @@ class HttpOnlyAnalyzer:
     def analyze(
         self,
         cookie: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
         return [
 
-            Finding(
+            Fact(
 
                 category="Cookies",
 

@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class RecordsAnalyzer:
@@ -6,9 +6,9 @@ class RecordsAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         records = normalized_data.get(
             "records",
@@ -20,9 +20,9 @@ class RecordsAnalyzer:
             if not values:
                 continue
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="DNS",
 
@@ -36,4 +36,4 @@ class RecordsAnalyzer:
 
             )
 
-        return findings
+        return facts

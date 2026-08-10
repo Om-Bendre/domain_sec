@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 COMMON_SESSION_COOKIES = {
@@ -31,9 +31,9 @@ class SessionAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         cookies = normalized_data.get(
             "cookies",
@@ -49,8 +49,8 @@ class SessionAnalyzer:
 
             if cookie_name in COMMON_SESSION_COOKIES:
 
-                findings.append(
-                    Finding(
+                facts.append(
+                    Fact(
                         category="Authentication",
                         entity="Session",
                         name="session_cookie",
@@ -59,4 +59,4 @@ class SessionAnalyzer:
                     )
                 )
 
-        return findings
+        return facts

@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 MFA_KEYWORDS = {
@@ -29,9 +29,9 @@ class MFAAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         html = normalized_data.get(
             "html",
@@ -42,9 +42,9 @@ class MFAAnalyzer:
 
             if keyword in html:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Authentication",
 
@@ -60,4 +60,4 @@ class MFAAnalyzer:
 
                 )
 
-        return findings
+        return facts

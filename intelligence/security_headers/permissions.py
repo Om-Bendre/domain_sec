@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class PermissionsPolicyAnalyzer:
@@ -6,17 +6,17 @@ class PermissionsPolicyAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         policy = normalized_data.get(
             "permissions_policy",
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -32,7 +32,7 @@ class PermissionsPolicyAnalyzer:
 
         if not policy:
 
-            return findings
+            return facts
 
         directives = [
 
@@ -44,9 +44,9 @@ class PermissionsPolicyAnalyzer:
 
         ]
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -60,9 +60,9 @@ class PermissionsPolicyAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -76,9 +76,9 @@ class PermissionsPolicyAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -92,9 +92,9 @@ class PermissionsPolicyAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -108,4 +108,4 @@ class PermissionsPolicyAnalyzer:
 
         )
 
-        return findings
+        return facts

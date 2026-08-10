@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 HOSTING = {
@@ -31,9 +31,9 @@ class HostingAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         headers = str(
 
@@ -61,9 +61,9 @@ class HostingAnalyzer:
 
             if key in searchable:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="Technology",
 
@@ -77,4 +77,4 @@ class HostingAnalyzer:
 
                 )
 
-        return findings
+        return facts

@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class RegistrarAnalyzer:
@@ -6,9 +6,9 @@ class RegistrarAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         registrar = normalized_data.get(
             "registrar",
@@ -16,9 +16,9 @@ class RegistrarAnalyzer:
 
         if registrar:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="WHOIS",
 
@@ -39,9 +39,9 @@ class RegistrarAnalyzer:
 
         if registrar_id:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="WHOIS",
 
@@ -55,4 +55,4 @@ class RegistrarAnalyzer:
 
             )
 
-        return findings
+        return facts

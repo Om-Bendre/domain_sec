@@ -1,7 +1,7 @@
 import base64
 import json
 
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class JWTAnalyzer:
@@ -9,9 +9,9 @@ class JWTAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         cookies = normalized_data.get(
             "cookies",
@@ -48,9 +48,9 @@ class JWTAnalyzer:
 
                 continue
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -64,9 +64,9 @@ class JWTAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -82,9 +82,9 @@ class JWTAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -100,9 +100,9 @@ class JWTAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -118,9 +118,9 @@ class JWTAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -136,9 +136,9 @@ class JWTAnalyzer:
 
             )
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Authentication",
 
@@ -154,7 +154,7 @@ class JWTAnalyzer:
 
             )
 
-        return findings
+        return facts
 
     def _decode(
         self,

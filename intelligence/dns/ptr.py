@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class PTRAnalyzer:
@@ -6,18 +6,18 @@ class PTRAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         ptr = normalized_data.get(
             "ptr",
             [],
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="DNS",
 
@@ -32,8 +32,8 @@ class PTRAnalyzer:
         )
 
         if not ptr:
-            return findings
+            return facts
 
         
 
-        return findings
+        return facts

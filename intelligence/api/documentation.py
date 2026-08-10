@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 DOCUMENTATION_PATTERNS = {
@@ -31,9 +31,9 @@ class DocumentationAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         body = normalized_data.get(
             "documentation",
@@ -47,9 +47,9 @@ class DocumentationAnalyzer:
 
             if pattern in body:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="API Security",
 
@@ -63,4 +63,4 @@ class DocumentationAnalyzer:
 
                 )
 
-        return findings
+        return facts

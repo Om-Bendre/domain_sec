@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class ExpiryAnalyzer:
@@ -6,9 +6,9 @@ class ExpiryAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         valid_from = normalized_data.get(
             "valid_from",
@@ -20,9 +20,9 @@ class ExpiryAnalyzer:
 
         if valid_from:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="TLS",
 
@@ -38,9 +38,9 @@ class ExpiryAnalyzer:
 
         if valid_until:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="TLS",
 
@@ -54,4 +54,4 @@ class ExpiryAnalyzer:
 
             )
 
-        return findings
+        return facts

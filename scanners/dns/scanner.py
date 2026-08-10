@@ -95,11 +95,11 @@ class DNSScanner(BaseScanner):
 
             )
 
-            findings = []
+            facts = []
 
             for analyzer in self.analyzers:
 
-                findings.extend(
+                facts.extend(
 
                     analyzer.analyze(
 
@@ -110,9 +110,9 @@ class DNSScanner(BaseScanner):
                 )
 
 
-            findings = self.mapper.map(
+            facts = self.mapper.map(
 
-                findings,
+                facts,
 
             )
 
@@ -130,7 +130,7 @@ class DNSScanner(BaseScanner):
 
                 context=context,
 
-                findings=findings,
+                fact=facts,
 
                 raw_data= {},
 

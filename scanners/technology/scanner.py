@@ -110,11 +110,11 @@ class TechnologyScanner(BaseScanner):
 
             )
 
-            findings = []
+            facts = []
 
             for analyzer in self.analyzers:
 
-                findings.extend(
+                facts.extend(
 
                     analyzer.analyze(
 
@@ -124,9 +124,9 @@ class TechnologyScanner(BaseScanner):
 
                 )
 
-            findings = self.mapper.map(
+            facts = self.mapper.map(
 
-                findings,
+                facts,
 
             )
 
@@ -144,7 +144,7 @@ class TechnologyScanner(BaseScanner):
 
                 context=context,
 
-                findings=findings,
+                fact=facts,
 
                 raw_data= {},
 

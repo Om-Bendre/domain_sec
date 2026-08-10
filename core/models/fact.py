@@ -3,22 +3,13 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 
-class Findings(BaseModel):
-    rule_id: str
-
+class Fact(BaseModel):
     category: str
-
     entity: str | None = None
-
     name: str
-
     value: Any = None
 
-    severity: str
-
     description: str | None = None
-
-    recommendation: str | None = None
 
     evidence: str | None = None
 

@@ -95,11 +95,11 @@ class WHOISScanner(BaseScanner):
 
             )
 
-            findings = []
+            facts = []
 
             for analyzer in self.analyzers:
 
-                findings.extend(
+                facts.extend(
 
                     analyzer.analyze(
 
@@ -109,9 +109,9 @@ class WHOISScanner(BaseScanner):
 
                 )
 
-            findings = self.mapper.map(
+            facts = self.mapper.map(
 
-                findings,
+                facts,
 
             )
 
@@ -129,7 +129,7 @@ class WHOISScanner(BaseScanner):
 
                 context=context,
 
-                findings=findings,
+                fact=facts,
 
                 raw_data= {},
 

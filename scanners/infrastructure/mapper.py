@@ -1,11 +1,11 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class InfrastructureMapper:
 
     def map(
         self,
-        findings: list[Finding],
-    ) -> list[Finding]:
+        facts: list[Fact],
+    ) -> list[Fact]:
 
-        return findings
+        return facts

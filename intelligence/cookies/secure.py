@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class SecureAnalyzer:
@@ -6,12 +6,12 @@ class SecureAnalyzer:
     def analyze(
         self,
         cookie: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
 
         return [
 
-            Finding(
+            Fact(
 
                 category="Cookies",
 

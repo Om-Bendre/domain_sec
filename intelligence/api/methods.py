@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class MethodsAnalyzer:
@@ -6,9 +6,9 @@ class MethodsAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         allow = normalized_data.get(
             "api",
@@ -19,7 +19,7 @@ class MethodsAnalyzer:
 
         if not allow:
 
-            return findings
+            return facts
 
         methods = [
 
@@ -33,9 +33,9 @@ class MethodsAnalyzer:
 
         for method in methods:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -49,4 +49,4 @@ class MethodsAnalyzer:
 
             )
 
-        return findings
+        return facts

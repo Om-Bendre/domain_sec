@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class HTTPVersionAnalyzer:
@@ -6,7 +6,7 @@ class HTTPVersionAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
         version = normalized_data.get(
             "http_version",
@@ -18,7 +18,7 @@ class HTTPVersionAnalyzer:
 
         return [
 
-            Finding(
+            Fact(
 
                 category="HTTP",
 

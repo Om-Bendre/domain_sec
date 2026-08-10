@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class DatesAnalyzer:
@@ -8,9 +8,9 @@ class DatesAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         created = normalized_data.get(
             "creation_date",
@@ -26,9 +26,9 @@ class DatesAnalyzer:
 
         if created:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="WHOIS",
 
@@ -44,9 +44,9 @@ class DatesAnalyzer:
 
         if updated:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="WHOIS",
 
@@ -62,9 +62,9 @@ class DatesAnalyzer:
 
         if expires:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="WHOIS",
 
@@ -105,9 +105,9 @@ class DatesAnalyzer:
 
             ).days
             
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="WHOIS",
 
@@ -121,4 +121,4 @@ class DatesAnalyzer:
 
             )
 
-        return findings
+        return facts

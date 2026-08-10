@@ -1,6 +1,6 @@
 import re
 
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class VersioningAnalyzer:
@@ -24,9 +24,9 @@ class VersioningAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         url = normalized_data.get(
             "url",
@@ -48,9 +48,9 @@ class VersioningAnalyzer:
 
         if match:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -84,9 +84,9 @@ class VersioningAnalyzer:
 
             if value:
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="API Security",
 
@@ -118,9 +118,9 @@ class VersioningAnalyzer:
 
         if match:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="API Security",
 
@@ -134,4 +134,4 @@ class VersioningAnalyzer:
 
             )
 
-        return findings
+        return facts

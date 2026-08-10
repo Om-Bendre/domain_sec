@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class ReferrerPolicyAnalyzer:
@@ -6,17 +6,17 @@ class ReferrerPolicyAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         value = normalized_data.get(
             "referrer_policy",
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -32,9 +32,9 @@ class ReferrerPolicyAnalyzer:
 
         if value:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Security Headers",
 
@@ -48,4 +48,4 @@ class ReferrerPolicyAnalyzer:
 
             )
 
-        return findings
+        return facts

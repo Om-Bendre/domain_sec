@@ -1,6 +1,6 @@
 import re
 
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 PATTERNS = {
@@ -41,9 +41,9 @@ class SensitiveDataAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         body = normalized_data.get(
             "body",
@@ -62,9 +62,9 @@ class SensitiveDataAnalyzer:
 
             ):
 
-                findings.append(
+                facts.append(
 
-                    Finding(
+                    Fact(
 
                         category="API Security",
 
@@ -78,4 +78,4 @@ class SensitiveDataAnalyzer:
 
                 )
 
-        return findings
+        return facts

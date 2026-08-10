@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 COMMON_CSRF_NAMES = {
@@ -25,9 +25,9 @@ class CSRFAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         forms = normalized_data.get(
             "forms",
@@ -46,9 +46,9 @@ class CSRFAnalyzer:
 
                 if field_name in COMMON_CSRF_NAMES:
 
-                    findings.append(
+                    facts.append(
 
-                        Finding(
+                        Fact(
 
                             category="Authentication",
 
@@ -64,4 +64,4 @@ class CSRFAnalyzer:
 
                     )
 
-        return findings
+        return facts

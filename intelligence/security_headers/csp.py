@@ -1,4 +1,4 @@
-from core.models.finding import Finding
+from core.models.fact import Fact
 
 
 class CSPAnalyzer:
@@ -6,9 +6,9 @@ class CSPAnalyzer:
     def analyze(
         self,
         normalized_data: dict,
-    ) -> list[Finding]:
+    ) -> list[Fact]:
 
-        findings = []
+        facts = []
 
         csp = normalized_data.get("csp")
 
@@ -22,9 +22,9 @@ class CSPAnalyzer:
 
         if not csp and not report_only:
 
-            findings.append(
+            facts.append(
 
-                Finding(
+                Fact(
 
                     category="Security Headers",
 
@@ -38,7 +38,7 @@ class CSPAnalyzer:
 
             )
 
-            return findings
+            return facts
 
         #
         # Determine policy & mode
@@ -52,9 +52,9 @@ class CSPAnalyzer:
             else "Report-Only"
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -68,9 +68,9 @@ class CSPAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -98,9 +98,9 @@ class CSPAnalyzer:
 
         ]
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -118,9 +118,9 @@ class CSPAnalyzer:
         # Security properties
         #
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -140,9 +140,9 @@ class CSPAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -156,9 +156,9 @@ class CSPAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -172,9 +172,9 @@ class CSPAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -188,9 +188,9 @@ class CSPAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -210,9 +210,9 @@ class CSPAnalyzer:
 
         )
 
-        findings.append(
+        facts.append(
 
-            Finding(
+            Fact(
 
                 category="Security Headers",
 
@@ -234,4 +234,4 @@ class CSPAnalyzer:
 
         )
 
-        return findings
+        return facts
