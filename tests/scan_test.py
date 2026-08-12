@@ -65,7 +65,7 @@ for name, scanner, request in SCANNERS:
         )
 
         print(f"Status   : {result.status}")
-        print(f"Findings : {len(result.findings)}")
+        print(f"Fact : {len(result.Fact)}")
         print(f"Errors   : {len(result.errors)}")
 
         if result.errors:

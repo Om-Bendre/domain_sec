@@ -8,36 +8,21 @@ class ServerAnalyzer:
         normalized_data: dict,
     ) -> list[Fact]:
 
-        facts = []
-
         server = normalized_data.get(
-
             "headers",
-
             {},
-
         ).get(
-
-            "Server"
-
+            "server"
         )
 
-        if server:
+        if not server:
+            return []
 
-            facts.append(
-
-                Fact(
-
-                    category="Technology",
-
-                    entity="Server",
-
-                    name="detected_server",
-
-                    value=server,
-
-                )
-
+        return [
+            Fact(
+                category="Technology",
+                entity="Server",
+                name="detected_server",
+                value=server,
             )
-
-        return facts
+        ]

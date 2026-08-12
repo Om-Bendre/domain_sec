@@ -1,39 +1,6 @@
 from core.models.fact import Fact
 
 
-BACKENDS = {
-
-    "php": "PHP",
-
-    "django": "Python",
-
-    "flask": "Python",
-
-    "fastapi": "Python",
-
-    "gunicorn": "Python",
-
-    "uvicorn": "Python",
-
-    "express": "Node.js",
-
-    "node": "Node.js",
-
-    "asp.net": ".NET",
-
-    "kestrel": ".NET",
-
-    "spring": "Java",
-
-    "tomcat": "Java",
-
-    "jetty": "Java",
-
-    "go": "Go",
-
-}
-
-
 class BackendAnalyzer:
 
     def analyze(
@@ -43,46 +10,69 @@ class BackendAnalyzer:
 
         facts = []
 
-        headers = str(
+        headers = normalized_data.get(
+            "headers",
+            {},
+        )
 
-            normalized_data.get(
-
-                "headers",
-
-                {},
-
-            )
-
-        ).lower()
-
-        html = normalized_data.get(
-
-            "html",
-
+        server = headers.get(
+            "server",
             "",
-
         ).lower()
 
-        searchable = headers + html
+        powered_by = headers.get(
+            "x-powered-by",
+            "",
+        ).lower()
 
-        for key, backend in BACKENDS.items():
+        detections = set()
 
-            if key in searchable:
+        if (
+            "php" in server
+            or "php" in powered_by
+        ):
+            detections.add("PHP")
 
-                facts.append(
+        if powered_by == "express":
+            detections.add("Node.js")
 
-                    Fact(
+        if any(
+            value in server
+            for value in (
+                "gunicorn",
+                "uvicorn",
+                "werkzeug",
+            )
+        ):
+            detections.add("Python")
 
-                        category="Technology",
+        if (
+            "asp.net" in powered_by
+            or "kestrel" in server
+        ):
+            detections.add(".NET")
 
-                        entity="Backend",
+        if any(
+            value in server
+            for value in (
+                "tomcat",
+                "jetty",
+            )
+        ):
+            detections.add("Java")
 
-                        name="technology",
+        if server == "go":
+            detections.add("Go")
 
-                        value=backend,
+        for backend in sorted(detections):
 
-                    )
-
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="Backend",
+                    name="technology",
+                    value=backend,
                 )
+            )
 
         return facts

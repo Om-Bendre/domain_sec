@@ -1,25 +1,6 @@
 from core.models.fact import Fact
 
 
-CDNS = {
-
-    "cloudflare": "Cloudflare",
-
-    "cloudfront": "Amazon CloudFront",
-
-    "fastly": "Fastly",
-
-    "akamai": "Akamai",
-
-    "cdn77": "CDN77",
-
-    "jsdelivr": "jsDelivr",
-
-    "unpkg": "UNPKG",
-
-}
-
-
 class CDNAnalyzer:
 
     def analyze(
@@ -29,50 +10,65 @@ class CDNAnalyzer:
 
         facts = []
 
-        headers = str(
-
-            normalized_data.get(
-
-                "headers",
-
-                {},
-
-            )
-
-        ).lower()
+        headers = normalized_data.get(
+            "headers",
+            {},
+        )
 
         scripts = " ".join(
-
             normalized_data.get(
-
                 "scripts",
-
                 [],
-
             )
-
         ).lower()
 
-        searchable = headers + scripts
+        server = headers.get(
+            "server",
+            "",
+        ).lower()
 
-        for key, provider in CDNS.items():
+        via = headers.get(
+            "via",
+            "",
+        ).lower()
 
-            if key in searchable:
+        detections = set()
 
-                facts.append(
+        if (
+            "cloudflare" in server
+            or headers.get("cf-ray")
+        ):
+            detections.add("Cloudflare")
 
-                    Fact(
+        if "cloudfront" in via:
+            detections.add(
+                "Amazon CloudFront"
+            )
 
-                        category="Technology",
+        if "fastly" in via:
+            detections.add("Fastly")
 
-                        entity="CDN",
+        if "akamai" in via:
+            detections.add("Akamai")
 
-                        name="provider",
+        if "cdn77.com" in scripts:
+            detections.add("CDN77")
 
-                        value=provider,
+        if "cdn.jsdelivr.net" in scripts:
+            detections.add("jsDelivr")
 
-                    )
+        if "unpkg.com" in scripts:
+            detections.add("UNPKG")
 
+        for provider in sorted(detections):
+
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="CDN",
+                    name="provider",
+                    value=provider,
                 )
+            )
 
         return facts

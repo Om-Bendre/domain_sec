@@ -4,23 +4,14 @@ import requests
 class TechnologyClient:
 
     DEFAULT_HEADERS = {
-
         "User-Agent": (
-
             "Mozilla/5.0 "
-
             "(X11; Linux x86_64) "
-
             "AppleWebKit/537.36 "
-
             "(KHTML, like Gecko) "
-
             "Chrome/138.0.0.0 "
-
             "Safari/537.36"
-
         )
-
     }
 
     def query(
@@ -30,41 +21,31 @@ class TechnologyClient:
     ) -> dict:
 
         response = requests.get(
-
             target,
-
             headers=self.DEFAULT_HEADERS,
-
             allow_redirects=True,
-
             timeout=timeout,
-
         )
 
         return {
 
-            "url": response.url,
+            "url":
+                response.url,
 
-            "status_code": response.status_code,
+            "status_code":
+                response.status_code,
 
-            "reason": response.reason,
+            "reason":
+                response.reason,
 
-            "headers": dict(
+            "headers":
+                dict(response.headers),
 
-                response.headers
-
-            ),
-
-            "body": response.text,
+            "body":
+                response.text,
 
             "history": [
-
                 r.url
-
-                for r
-
-                in response.history
-
+                for r in response.history
             ],
-
         }

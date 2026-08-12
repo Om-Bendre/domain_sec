@@ -9,126 +9,186 @@ class TechnologyNormalizer:
     ) -> dict:
 
         html = raw_data.get(
-
             "body",
-
             "",
-
         )
 
         soup = BeautifulSoup(
-
             html,
-
             "lxml",
-
         )
 
-        scripts = [
+        #
+        # Scripts
+        #
 
-            script.get(
+        scripts = []
 
-                "src",
+        inline_scripts = []
 
-                "",
+        for script in soup.find_all(
+            "script"
+        ):
 
+            src = script.get(
+                "src"
             )
 
-            for script
+            if src:
+                scripts.append(src)
 
-            in soup.find_all(
+            else:
+                content = script.string
 
-                "script",
+                if content:
+                    inline_scripts.append(
+                        content
+                    )
 
-                src=True,
+        #
+        # Stylesheets
+        #
 
+        stylesheets = []
+
+        for css in soup.find_all(
+            "link",
+            rel=lambda value: (
+                value
+                and "stylesheet" in value
+            ),
+        ):
+
+            href = css.get(
+                "href"
             )
 
-        ]
+            if href:
+                stylesheets.append(
+                    href
+                )
 
-        stylesheets = [
+        #
+        # Meta tags
+        #
 
-            css.get(
+        meta = {}
 
-                "href",
+        for tag in soup.find_all(
+            "meta"
+        ):
 
-                "",
-
+            name = tag.get(
+                "name"
             )
 
-            for css
-
-            in soup.find_all(
-
-                "link",
-
-                rel="stylesheet",
-
+            content = tag.get(
+                "content"
             )
 
-        ]
+            if name and content:
 
-        meta = {
+                meta[name.lower()] = content
 
-            tag.get(
+            #
+            # Also capture property-based
+            # metadata such as og:*
+            #
 
-                "name",
-
-                ""
-            ).lower():
-
-            tag.get(
-
-                "content",
-
-                ""
-
+            prop = tag.get(
+                "property"
             )
 
-            for tag
+            if prop and content:
 
-            in soup.find_all(
+                meta[prop.lower()] = content
 
-                "meta"
+        #
+        # Generator
+        #
 
+        generator = soup.find(
+            "meta",
+            attrs={
+                "name": "generator"
+            },
+        )
+
+        generator_value = None
+
+        if generator:
+
+            generator_value = generator.get(
+                "content"
             )
 
+        #
+        # HTML attributes useful for
+        # framework detection
+        #
+
+        html_attributes = []
+
+        for tag in soup.find_all():
+
+            for attribute in tag.attrs:
+
+                html_attributes.append(
+                    str(attribute).lower()
+                )
+
+        #
+        # Response headers
+        #
+
+        headers = raw_data.get(
+            "headers",
+            {},
+        )
+
+        normalized_headers = {
+            str(key).lower(): str(value)
+            for key, value in headers.items()
         }
 
         return {
 
             "url":
-
                 raw_data.get(
-
                     "url"
-
                 ),
 
             "headers":
-
-                raw_data.get(
-
-                    "headers",
-
-                    {},
-
-                ),
+                normalized_headers,
 
             "html":
-
                 html,
 
             "scripts":
-
                 scripts,
 
-            "stylesheets":
+            "inline_scripts":
+                inline_scripts,
 
+            "stylesheets":
                 stylesheets,
 
             "meta":
-
                 meta,
+
+            "generator":
+                generator_value,
+
+            "cookies": raw_data.get(
+                "cookie_headers",
+                [],
+            ),
+
+            "html_attributes":
+                list(
+                    set(
+                        html_attributes
+                    )
+                ),
 
         }

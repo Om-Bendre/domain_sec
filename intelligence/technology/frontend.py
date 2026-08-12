@@ -1,23 +1,6 @@
 from core.models.fact import Fact
 
 
-FRONTEND_LIBRARIES = {
-
-    "bootstrap": "Bootstrap",
-
-    "tailwind": "Tailwind CSS",
-
-    "bulma": "Bulma",
-
-    "foundation": "Foundation",
-
-    "material": "Material UI",
-
-    "semantic-ui": "Semantic UI",
-
-}
-
-
 class FrontendAnalyzer:
 
     def analyze(
@@ -27,46 +10,58 @@ class FrontendAnalyzer:
 
         facts = []
 
-        css = " ".join(
-
-            normalized_data.get(
-
-                "stylesheets",
-
-                [],
-
-            )
-
-        ).lower()
-
         html = normalized_data.get(
-
             "html",
-
             "",
-
         ).lower()
 
-        searchable = css + html
+        scripts = " ".join(
+            normalized_data.get(
+                "scripts",
+                [],
+            )
+        ).lower()
 
-        for key, library in FRONTEND_LIBRARIES.items():
+        stylesheets = " ".join(
+            normalized_data.get(
+                "stylesheets",
+                [],
+            )
+        ).lower()
 
-            if key in searchable:
+        detections = set()
 
-                facts.append(
+        if "bootstrap" in stylesheets:
+            detections.add("Bootstrap")
 
-                    Fact(
+        if "tailwind" in stylesheets:
+            detections.add("Tailwind CSS")
 
-                        category="Technology",
+        if "bulma" in stylesheets:
+            detections.add("Bulma")
 
-                        entity="Frontend",
+        if "foundation" in stylesheets:
+            detections.add("Foundation")
 
-                        name="library",
+        if (
+            "material-ui" in scripts
+            or "@mui/" in scripts
+            or "mui" in stylesheets
+        ):
+            detections.add("Material UI")
 
-                        value=library,
+        if "semantic-ui" in stylesheets:
+            detections.add("Semantic UI")
 
-                    )
+        for library in sorted(detections):
 
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="Frontend",
+                    name="library",
+                    value=library,
                 )
+            )
 
         return facts

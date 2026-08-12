@@ -1,31 +1,6 @@
 from core.models.fact import Fact
 
 
-HOSTING = {
-
-    "vercel": "Vercel",
-
-    "netlify": "Netlify",
-
-    "render": "Render",
-
-    "railway": "Railway",
-
-    "heroku": "Heroku",
-
-    "fly.io": "Fly.io",
-
-    "firebase": "Firebase",
-
-    "github pages": "GitHub Pages",
-
-    "azure": "Azure",
-
-    "aws": "AWS",
-
-}
-
-
 class HostingAnalyzer:
 
     def analyze(
@@ -35,46 +10,62 @@ class HostingAnalyzer:
 
         facts = []
 
-        headers = str(
+        headers = normalized_data.get(
+            "headers",
+            {},
+        )
 
-            normalized_data.get(
-
-                "headers",
-
-                {},
-
-            )
-
-        ).lower()
-
-        html = normalized_data.get(
-
-            "html",
-
+        server = headers.get(
+            "server",
             "",
-
         ).lower()
 
-        searchable = headers + html
+        powered_by = headers.get(
+            "x-powered-by",
+            "",
+        ).lower()
 
-        for key, provider in HOSTING.items():
+        detections = set()
 
-            if key in searchable:
+        if "vercel" in server:
+            detections.add("Vercel")
 
-                facts.append(
+        if "netlify" in server:
+            detections.add("Netlify")
 
-                    Fact(
+        if "render" in server:
+            detections.add("Render")
 
-                        category="Technology",
+        if "railway" in server:
+            detections.add("Railway")
 
-                        entity="Hosting",
+        if "heroku" in server:
+            detections.add("Heroku")
 
-                        name="provider",
+        if "fly.io" in server:
+            detections.add("Fly.io")
 
-                        value=provider,
+        if "firebase" in server:
+            detections.add("Firebase")
 
-                    )
+        if "github" in server:
+            detections.add("GitHub Pages")
 
+        if "azure" in server:
+            detections.add("Azure")
+
+        if "aws" in server:
+            detections.add("AWS")
+
+        for provider in sorted(detections):
+
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="Hosting",
+                    name="provider",
+                    value=provider,
                 )
+            )
 
         return facts

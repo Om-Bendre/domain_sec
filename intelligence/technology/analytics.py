@@ -1,29 +1,6 @@
 from core.models.fact import Fact
 
 
-ANALYTICS = {
-
-    "google-analytics": "Google Analytics",
-
-    "gtag": "Google Analytics",
-
-    "googletagmanager": "Google Tag Manager",
-
-    "plausible": "Plausible",
-
-    "matomo": "Matomo",
-
-    "mixpanel": "Mixpanel",
-
-    "segment": "Segment",
-
-    "hotjar": "Hotjar",
-
-    "clarity": "Microsoft Clarity",
-
-}
-
-
 class AnalyticsAnalyzer:
 
     def analyze(
@@ -34,45 +11,75 @@ class AnalyticsAnalyzer:
         facts = []
 
         html = normalized_data.get(
-
             "html",
-
             "",
-
         ).lower()
 
         scripts = " ".join(
-
             normalized_data.get(
-
                 "scripts",
-
                 [],
-
             )
-
         ).lower()
 
-        searchable = html + scripts
+        inline_scripts = " ".join(
+            normalized_data.get(
+                "inline_scripts",
+                [],
+            )
+        ).lower()
 
-        for key, provider in ANALYTICS.items():
+        searchable = (
+            html
+            + scripts
+            + inline_scripts
+        )
 
-            if key in searchable:
+        detections = set()
 
-                facts.append(
+        if (
+            "google-analytics.com" in searchable
+            or "googletagmanager.com" in searchable
+            or "gtag(" in searchable
+        ):
+            detections.add(
+                "Google Analytics"
+            )
 
-                    Fact(
+        if "googletagmanager.com" in searchable:
+            detections.add(
+                "Google Tag Manager"
+            )
 
-                        category="Technology",
+        if "plausible.io" in searchable:
+            detections.add("Plausible")
 
-                        entity="Analytics",
+        if "matomo" in searchable:
+            detections.add("Matomo")
 
-                        name="provider",
+        if "mixpanel" in searchable:
+            detections.add("Mixpanel")
 
-                        value=provider,
+        if "segment.com" in searchable:
+            detections.add("Segment")
 
-                    )
+        if "hotjar" in searchable:
+            detections.add("Hotjar")
 
+        if "clarity.ms" in searchable:
+            detections.add(
+                "Microsoft Clarity"
+            )
+
+        for provider in sorted(detections):
+
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="Analytics",
+                    name="provider",
+                    value=provider,
                 )
+            )
 
         return facts

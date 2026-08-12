@@ -1,21 +1,6 @@
 from core.models.fact import Fact
 
 
-CMS = {
-
-    "wordpress": "WordPress",
-
-    "drupal": "Drupal",
-
-    "joomla": "Joomla",
-
-    "ghost": "Ghost",
-
-    "strapi": "Strapi",
-
-}
-
-
 class CMSAnalyzer:
 
     def analyze(
@@ -26,45 +11,52 @@ class CMSAnalyzer:
         facts = []
 
         html = normalized_data.get(
-
             "html",
-
             "",
-
         ).lower()
 
-        meta = str(
-
+        generator = (
             normalized_data.get(
-
-                "meta",
-
-                {},
-
-            )
-
+                "generator"
+            ) or ""
         ).lower()
 
-        searchable = html + meta
+        detections = set()
 
-        for key, value in CMS.items():
+        if (
+            "wordpress" in generator
+            or "/wp-content/" in html
+            or "/wp-includes/" in html
+        ):
+            detections.add("WordPress")
 
-            if key in searchable:
+        if (
+            "drupal" in generator
+            or "drupal-settings-json" in html
+        ):
+            detections.add("Drupal")
 
-                facts.append(
+        if (
+            "joomla" in generator
+            or "/media/system/" in html
+        ):
+            detections.add("Joomla")
 
-                    Fact(
+        if "ghost" in generator:
+            detections.add("Ghost")
 
-                        category="Technology",
+        if "strapi" in generator:
+            detections.add("Strapi")
 
-                        entity="CMS",
+        for cms in sorted(detections):
 
-                        name="cms",
-
-                        value=value,
-
-                    )
-
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="CMS",
+                    name="cms",
+                    value=cms,
                 )
+            )
 
         return facts

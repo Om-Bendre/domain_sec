@@ -1,28 +1,19 @@
 from core.models.fact import Fact
 
 
-ERROR_PATTERNS = {
-
-    "stack trace": "Stack Trace",
-
-    "traceback": "Python Traceback",
-
-    "exception": "Exception",
-
-    "nullpointerexception": "Java Exception",
-
-    "sql syntax": "SQL Error",
-
-    "fatal error": "Fatal Error",
-
-    "debug": "Debug Information",
-
-    "internal server error": "Internal Error",
-
-}
-
-
 class ErrorHandlingAnalyzer:
+
+    ERROR_MARKERS = (
+        "traceback (most recent call last)",
+        "stack trace",
+        "java.lang.",
+        "exception in thread",
+        "fatal error",
+        "syntaxerror:",
+        "referenceerror:",
+        "typeerror:",
+        "filenotfounderror:",
+    )
 
     def analyze(
         self,
@@ -34,26 +25,36 @@ class ErrorHandlingAnalyzer:
         body = normalized_data.get(
             "body",
             "",
-        ).lower()
+        )
 
-        for pattern, name in ERROR_PATTERNS.items():
+        if not body:
+            return facts
 
-            if pattern in body:
+        body_lower = body.lower()
 
-                facts.append(
+        matched_terms = []
 
-                    Fact(
+        for marker in self.ERROR_MARKERS:
 
-                        category="API Security",
+            if marker in body_lower:
 
-                        entity="Error Handling",
-
-                        name="error_information",
-
-                        value=name,
-
-                    )
-
+                matched_terms.append(
+                    marker
                 )
+
+        if not matched_terms:
+            return facts
+
+        facts.append(
+            Fact(
+                category="API Security",
+                entity="Error",
+                name="error_information",
+                value=True,
+                metadata={
+                    "matched_terms": matched_terms,
+                },
+            )
+        )
 
         return facts

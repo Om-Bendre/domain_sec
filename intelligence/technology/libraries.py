@@ -1,35 +1,6 @@
 from core.models.fact import Fact
 
 
-LIBRARIES = {
-
-    "jquery": "jQuery",
-
-    "axios": "Axios",
-
-    "lodash": "Lodash",
-
-    "moment": "Moment.js",
-
-    "chart.js": "Chart.js",
-
-    "chartjs": "Chart.js",
-
-    "d3": "D3.js",
-
-    "three": "Three.js",
-
-    "anime": "Anime.js",
-
-    "leaflet": "Leaflet",
-
-    "socket.io": "Socket.IO",
-
-    "hammer": "Hammer.js",
-
-}
-
-
 class LibrariesAnalyzer:
 
     def analyze(
@@ -40,45 +11,56 @@ class LibrariesAnalyzer:
         facts = []
 
         scripts = " ".join(
-
             normalized_data.get(
-
                 "scripts",
-
                 [],
+            )
+        ).lower()
 
+        detections = set()
+
+        if "jquery" in scripts:
+            detections.add("jQuery")
+
+        if "axios" in scripts:
+            detections.add("Axios")
+
+        if "lodash" in scripts:
+            detections.add("Lodash")
+
+        if "moment" in scripts:
+            detections.add("Moment.js")
+
+        if "chart.js" in scripts:
+            detections.add("Chart.js")
+
+        if "d3.js" in scripts:
+            detections.add("D3.js")
+
+        if "three.js" in scripts:
+            detections.add("Three.js")
+
+        if "anime.js" in scripts:
+            detections.add("Anime.js")
+
+        if "leaflet" in scripts:
+            detections.add("Leaflet")
+
+        if "socket.io" in scripts:
+            detections.add("Socket.IO")
+
+        if "hammer.js" in scripts:
+            detections.add("Hammer.js")
+
+        for library in sorted(detections):
+
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="Libraries",
+                    name="library",
+                    value=library,
+                )
             )
 
-        ).lower()
-
-        html = normalized_data.get(
-
-            "html",
-
-            "",
-
-        ).lower()
-
-        searchable = scripts + html
-
-        for key, library in LIBRARIES.items():
-
-            if key in searchable:
-
-                facts.append(
-
-                    Fact(
-
-                        category="Technology",
-
-                        entity="Libraries",
-
-                        name="library",
-
-                        value=library,
-
-                    )
-
-                )
-
-       
+        return facts

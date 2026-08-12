@@ -1,35 +1,6 @@
 from core.models.fact import Fact
 
 
-JAVASCRIPT_FRAMEWORKS = {
-
-    "react": "React",
-
-    "react-dom": "React",
-
-    "_next": "Next.js",
-
-    "__next": "Next.js",
-
-    "vue": "Vue.js",
-
-    "__nuxt": "Nuxt.js",
-
-    "angular": "Angular",
-
-    "ng-": "Angular",
-
-    "svelte": "Svelte",
-
-    "astro": "Astro",
-
-    "solid": "SolidJS",
-
-    "preact": "Preact",
-
-}
-
-
 class JavaScriptAnalyzer:
 
     def analyze(
@@ -51,26 +22,91 @@ class JavaScriptAnalyzer:
             )
         ).lower()
 
-        searchable = html + scripts
+        inline_scripts = " ".join(
+            normalized_data.get(
+                "inline_scripts",
+                [],
+            )
+        ).lower()
 
-        for key, framework in JAVASCRIPT_FRAMEWORKS.items():
+        attributes = normalized_data.get(
+            "html_attributes",
+            [],
+        )
 
-            if key in searchable:
+        searchable = (
+            html
+            + scripts
+            + inline_scripts
+        )
 
-                facts.append(
+        detections = set()
 
-                    Fact(
+        if (
+            "react-dom" in searchable
+            or "react.production" in searchable
+            or "react.development" in searchable
+            or "data-reactroot" in html
+        ):
+            detections.add("React")
 
-                        category="Technology",
+        if (
+            "__next_data__" in html
+            or "/_next/" in searchable
+        ):
+            detections.add("Next.js")
 
-                        entity="JavaScript",
+        if (
+            "vue.runtime" in searchable
+            or "vue.global" in searchable
+            or "vue.min.js" in searchable
+        ):
+            detections.add("Vue.js")
 
-                        name="framework",
+        if (
+            "__nuxt__" in html
+            or "/_nuxt/" in searchable
+        ):
+            detections.add("Nuxt.js")
 
-                        value=framework,
+        if (
+            "ng-version" in html
+            or "@angular/" in searchable
+        ):
+            detections.add("Angular")
 
-                    )
+        if (
+            ".svelte" in searchable
+            or "svelte-" in searchable
+        ):
+            detections.add("Svelte")
 
+        if (
+            "astro-island" in html
+            or "/_astro/" in searchable
+        ):
+            detections.add("Astro")
+
+        if (
+            "solid-js" in searchable
+            or "solidjs" in searchable
+        ):
+            detections.add("SolidJS")
+
+        if (
+            "preact" in searchable
+        ):
+            detections.add("Preact")
+
+        for framework in sorted(detections):
+
+            facts.append(
+                Fact(
+                    category="Technology",
+                    entity="JavaScript",
+                    name="framework",
+                    value=framework,
                 )
+            )
 
         return facts
