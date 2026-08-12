@@ -1,7 +1,7 @@
 from core.models.fact import Fact
 
 
-class AuthenticationAnalyzer:
+class AuthenticationSchemeAnalyzer:
 
     def analyze(
         self,

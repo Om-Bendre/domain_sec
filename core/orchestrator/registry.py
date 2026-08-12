@@ -16,24 +16,24 @@ class ScannerRegistry:
 
         return [
 
-            # DNSScanner(),
+            DNSScanner(),
 
-            # WHOISScanner(),
+            WHOISScanner(),
 
             # InfrastructureScanner(),
 
-            # HTTPScanner(),
+            HTTPScanner(),
 
-            # TLSScanner(),
+            TLSScanner(),
 
-            # SecurityHeadersScanner(),
+            SecurityHeadersScanner(),
 
-            # CookieScanner(),
+            CookieScanner(),
 
             # AuthenticationScanner(),
 
             # APIScanner(),
 
-            TechnologyScanner(),
+            # TechnologyScanner(),
 
         ]

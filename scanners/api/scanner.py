@@ -16,7 +16,7 @@ from scanners.api.client import APISecurityClient
 from scanners.api.normalizer import APISecurityNormalizer
 from scanners.api.mapper import APISecurityMapper
 
-from intelligence.api.authentication import AuthenticationAnalyzer
+
 from intelligence.api.cors import CORSAnalyzer
 from intelligence.api.methods import MethodsAnalyzer
 from intelligence.api.versioning import VersioningAnalyzer
@@ -47,8 +47,6 @@ class APIScanner(BaseScanner):
         self.mapper = APISecurityMapper()
 
         self.analyzers = [
-
-            AuthenticationAnalyzer(),
 
             CORSAnalyzer(),
 

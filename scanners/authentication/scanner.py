@@ -25,6 +25,7 @@ from intelligence.authentication.jwt import JWTAnalyzer
 from intelligence.authentication.oauth import OAuthAnalyzer
 from intelligence.authentication.mfa import MFAAnalyzer
 from intelligence.authentication.password import PasswordAnalyzer
+from intelligence.authentication.scheme import AuthenticationSchemeAnalyzer
 
 
 class AuthenticationScanner(BaseScanner):
@@ -58,6 +59,8 @@ class AuthenticationScanner(BaseScanner):
             MFAAnalyzer(),
 
             PasswordAnalyzer(),
+
+            AuthenticationSchemeAnalyzer(),
 
         ]
 
