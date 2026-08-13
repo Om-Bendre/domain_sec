@@ -18,8 +18,6 @@ from scanners.http.mapper import HTTPMapper
 from intelligence.http.redirect import RedirectAnalyzer
 from intelligence.http.server import ServerAnalyzer
 from intelligence.http.compression import CompressionAnalyzer
-
-
 from intelligence.http.version import HTTPVersionAnalyzer
 
 

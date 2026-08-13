@@ -21,10 +21,22 @@ class StatusAnalyzer:
         ):
 
             statuses = [
-
                 statuses,
-
             ]
+
+      
+
+        unique_statuses = {}
+
+        for status in statuses:
+
+            code = str(status).strip().split()[0] if status else ""
+
+            if code and code not in unique_statuses:
+
+                unique_statuses[code] = str(status).strip()
+
+        deduped = list(unique_statuses.values())
 
         facts.append(
 
@@ -36,28 +48,30 @@ class StatusAnalyzer:
 
                 name="status_count",
 
-                value=len(statuses),
+                value=len(deduped),
 
             )
 
         )
 
-        # for status in statuses:
+        facts.append(
 
-        #     facts.append(
+            Fact(
 
-        #         Fact(
+                category="WHOIS",
 
-        #             category="WHOIS",
+                entity="Status",
 
-        #             entity="Status",
+                name="domain_status",
 
-        #             name="domain_status",
+                value=[
 
-        #             value=status,
+                    code for code in unique_statuses.keys()
 
-        #         )
+                ],
 
-        #     )
+            )
+
+        )
 
         return facts

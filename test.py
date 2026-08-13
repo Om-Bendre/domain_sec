@@ -7,9 +7,11 @@ from core.orchestrator.orchestrator import Orchestrator
 
 orchestrator = Orchestrator()
 
+inp = input("enter url after https://")
+
 result = orchestrator.scan(
 
-    "https://google.com",
+    f"https://{inp}",
 
     Configuration(),
 

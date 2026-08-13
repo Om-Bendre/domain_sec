@@ -18,35 +18,58 @@ class RedirectAnalyzer:
         facts.append(
 
             Fact(
-
                 category="HTTP",
-
                 entity="Redirect",
-
                 name="redirect_count",
-
                 value=len(chain),
-
             )
-
         )
 
-        # for url in chain:
+        facts.append(
+            Fact(
+                category="HTTP",
+                entity="Response",
+                name="initial_status",
+                value=normalized_data.get(
+                    "initial_status"
+                ),
+            )
+        )
 
-        #     facts.append(
+        facts.append(
+            Fact(
+                category="HTTP",
+                entity="Response",
+                name="final_status",
+                value=normalized_data.get(
+                    "final_status"
+                ),
+            )
+        )
 
-        #         Fact(
+        facts.append(
+            Fact(
+                category="HTTP",
+                entity="Response",
+                name="final_url",
+                value=normalized_data.get(
+                    "final_url"
+                ),
+            )
+        )
 
-        #             category="HTTP",
+        facts.append(
+            Fact(
+                category="HTTP",
+                entity="Redirect",
+                name="redirect_statuses",
+                value=normalized_data.get(
+                    "redirect_statuses",
+                    [],
+                ),
+            )
+        )
 
-        #             entity="Redirect",
 
-        #             name="redirect",
-
-        #             value=url,
-
-        #         )
-
-        #     )
 
         return facts

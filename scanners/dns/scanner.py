@@ -16,9 +16,9 @@ from scanners.dns.mapper import DNSMapper
 
 from intelligence.dns.records import RecordsAnalyzer
 from intelligence.dns.dnssec import DNSSECAnalyzer
-from intelligence.dns.ptr import PTRAnalyzer
 from intelligence.dns.mail import MailAnalyzer
 from intelligence.dns.nameserver import NameServerAnalyzer
+from intelligence.dns.caa import CAAAnalyzer
 
 
 class DNSScanner(BaseScanner):
@@ -43,8 +43,8 @@ class DNSScanner(BaseScanner):
 
             DNSSECAnalyzer(),
 
-            PTRAnalyzer(),
-
+            CAAAnalyzer(),
+            
             MailAnalyzer(),
 
             NameServerAnalyzer(),

@@ -33,7 +33,9 @@ class HTTPNormalizer:
             "http_version":
                 version_map.get(
                     raw_data["http_version"],
-                    str(raw_data["http_version"]),
+                    str(
+                        raw_data["http_version"]
+                    ),
                 ),
 
             "response_time_ms":
@@ -44,6 +46,18 @@ class HTTPNormalizer:
 
             "redirect_chain":
                 raw_data["history"],
+
+            "redirect_statuses":
+                raw_data["redirect_statuses"],
+
+            "initial_status":
+                raw_data["initial_status"],
+
+            "final_status":
+                raw_data["final_status"],
+
+            "final_url":
+                raw_data["final_url"],
 
             "headers":
                 headers,

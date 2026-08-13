@@ -56,6 +56,11 @@ class DNSNormalizer:
                     [],
                 ),
 
+                "dmarc": raw_data.get(
+                    "DMARC",
+                    [],
+                ),
+
             },
 
             "nameservers": raw_data.get(

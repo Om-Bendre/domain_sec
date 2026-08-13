@@ -15,12 +15,6 @@ class CertificateAnalyzer:
             "subject_common_name":
                 "subject_common_name",
 
-            "serial_number":
-                "serial_number",
-
-            "certificate_version":
-                "certificate_version",
-
             "san_count":
                 "san_count",
 
@@ -36,8 +30,6 @@ class CertificateAnalyzer:
             "signature_algorithm":
                 "signature_algorithm",
 
-            "certificate_fingerprint":
-                "certificate_fingerprint",
 
         }
 

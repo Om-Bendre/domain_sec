@@ -21,59 +21,34 @@ class DNSSECAnalyzer:
         )
 
         facts.append(
-
             Fact(
-
                 category="DNS",
-
                 entity="DNSSEC",
-
                 name="dnssec_enabled",
-
                 value=enabled,
-
             )
-
         )
 
-        if dnssec.get(
-            "dnskey",
-        ):
+        if dnssec.get("dnskeys"):
 
             facts.append(
-
                 Fact(
-
                     category="DNS",
-
                     entity="DNSSEC",
-
                     name="dnskey_present",
-
                     value=True,
-
                 )
-
             )
 
-        if dnssec.get(
-            "ds",
-        ):
+        if dnssec.get("ds"):
 
             facts.append(
-
                 Fact(
-
                     category="DNS",
-
                     entity="DNSSEC",
-
                     name="ds_record_present",
-
                     value=True,
-
                 )
-
             )
 
         return facts
