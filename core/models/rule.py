@@ -1,14 +1,14 @@
 from typing import Any
-from core.models.fact import Fact
+
 from pydantic import BaseModel, Field
 
 
-class Finding(BaseModel):
-    rule_id: str
+class Rule(BaseModel):
+    id: str
     category: str
-    entity: str | None = None
+    entity: str
     description: str
+    condition: dict[str, Any]
     severity: str
     remediation: str
     references: list[str] = Field(default_factory=list)
-    triggering_facts: list[Fact] = Field(default_factory=list)
